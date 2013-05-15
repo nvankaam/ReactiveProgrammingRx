@@ -1,0 +1,6 @@
+D:\Programação\Source Code\ReactiveProgrammingRx\RxSplunkSolution\Data\bin\Debug\Data.dll
+D:\Programação\Source Code\ReactiveProgrammingRx\RxSplunkSolution\Data\bin\Debug\Data.pdb
+D:\Programação\Source Code\ReactiveProgrammingRx\RxSplunkSolution\Data\obj\Debug\Data.csprojResolveAssemblyReference.cache
+D:\Programação\Source Code\ReactiveProgrammingRx\RxSplunkSolution\Data\obj\Debug\Data.dll
+D:\Programação\Source Code\ReactiveProgrammingRx\RxSplunkSolution\Data\obj\Debug\Data.pdb
+D:\Programação\Source Code\ReactiveProgrammingRx\RxSplunkSolution\Data\bin\Debug\Files\access_log.txt
