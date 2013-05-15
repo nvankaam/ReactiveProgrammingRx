@@ -1,0 +1,5 @@
+C:\Users\Niels van Kaam\Documents\Studie\Reactive\Repo\RxSplunkSolution\Data\obj\Debug\Data.csprojResolveAssemblyReference.cache
+C:\Users\Niels van Kaam\Documents\Studie\Reactive\Repo\RxSplunkSolution\Data\bin\Debug\Data.dll
+C:\Users\Niels van Kaam\Documents\Studie\Reactive\Repo\RxSplunkSolution\Data\bin\Debug\Data.pdb
+C:\Users\Niels van Kaam\Documents\Studie\Reactive\Repo\RxSplunkSolution\Data\obj\Debug\Data.dll
+C:\Users\Niels van Kaam\Documents\Studie\Reactive\Repo\RxSplunkSolution\Data\obj\Debug\Data.pdb
