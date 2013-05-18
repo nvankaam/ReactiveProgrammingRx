@@ -44,10 +44,19 @@
     <Compile Include="Class1.cs" />
     <Compile Include="Model\ApacheLogLine.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+<<<<<<< HEAD
     <Compile Include="Repo\RepoApacheLogLine.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Files\access_log.txt" />
+=======
+    <Compile Include="Repo\FileOpener.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Files\access_log.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+>>>>>>> db8e8958da823173349766d28fe462664600352f
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
