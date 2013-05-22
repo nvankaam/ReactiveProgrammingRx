@@ -1,5 +1,6 @@
 <Query Kind="Program">
   <Reference Relative="..\RxSplunkSolution\Data\bin\Debug\Data.dll">&lt;MyDocuments&gt;\Studie\Reactive\Repo\RxSplunkSolution\Data\bin\Debug\Data.dll</Reference>
+  <NuGetReference>Rx-Main</NuGetReference>
   <Namespace>Data.Model</Namespace>
   <Namespace>Data.Repo</Namespace>
   <Namespace>System</Namespace>
