@@ -27,7 +27,7 @@ namespace UnitTests
             LogLineString = "83.86.171.177 - - [15/May/2013:04:03:01 +0200] \"GET /weer/turfWeer HTTP/1.1\" 200 499 \"-\" \"Java/1.7.0_05\"";
             LogLine = new ApacheLogLine()
             {
-                IP = IPAddress.Parse("83.86.171.177"),
+                IP = "83.86.171.177",
                 Date = DateTime.ParseExact("[15/May/2013:04:03:01]", "[dd/MMM/yyyy:HH:mm:ss]", CultureInfo.InvariantCulture),
                 Command = "GET /weer/turfWeer HTTP/1.1",
                 Status = HttpStatusCode.OK,

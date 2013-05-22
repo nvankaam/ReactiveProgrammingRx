@@ -26,19 +26,32 @@ void Main()
 
 	var apacheLines = new RepoApacheLogLine("access_log.txt").LogLines.ToObservable();
 	
-	var count = 0;
-
-	using (apacheLines.Subscribe(
-			logs => {
-				Console.WriteLine(logs);
-				count++;
-			},
-				error => {
-			}, () => {Console.WriteLine(count++);}
-		)
-	)
+	var timeInterval = new TimeSpan(0,15,0); //15 minutes
 	
-	Console.ReadLine();
+	var result = apacheLines
+		.Select(
+		o => new {
+			o.GroupBy(
+				o => o.Date.Ticks / timeInterval.Ticks
+			).Select(
+				o => o.Take(1)
+			)
+		})
+		};
+		
+
+//
+//	apacheLines.Subscribe(
+//			logs => {
+//				Console.WriteLine(logs);
+//				count++;
+//			},
+//				error => {
+//			}, () => {Console.WriteLine(count++);}
+//		);
+//	
+//	
+//	Console.ReadLine();
 }
 
 // Define other methods and classes here
