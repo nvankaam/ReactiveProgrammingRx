@@ -1,2 +1,0 @@
-C:\Users\Niels van Kaam\Documents\Studie\Reactive\Repo\RxSplunkSolution\StreamExample\obj\Debug\StreamExample.csprojResolveAssemblyReference.cache
-C:\Users\Niels van Kaam\Documents\Studie\Reactive\Repo\RxSplunkSolution\StreamExample\bin\Debug\StreamExample.exe.config
