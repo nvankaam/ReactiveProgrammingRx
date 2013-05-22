@@ -9,6 +9,7 @@ namespace Data.Model
 {
     public class ApacheLogLine
     {
+        public string OriginalLine { get; set; }
         public IPAddress IP { get; set; }
         public DateTime Date { get; set; }
         //TODO: Parse aswell
@@ -18,5 +19,10 @@ namespace Data.Model
 
         public string Url { get; set; }
         public string UserAgent { get; set; }
+
+        public override string ToString()
+        {
+            return OriginalLine;
+        }
     }
 }

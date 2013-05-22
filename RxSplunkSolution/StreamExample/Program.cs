@@ -6,6 +6,7 @@ using System.Reactive.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Data.Repo;
+using System.Net;
 
 namespace StreamExample
 {
@@ -14,10 +15,10 @@ namespace StreamExample
         public static void Main(string[] args)
         {
 
-            var file = new FileOpener().LogFileLines.ToObservable();
+            var file = new RepoApacheLogLine().LogLines.ToObservable();
+            var ipCmp = IPAddress.Parse("80.101.212.178");
 
-            var res = file.Where(o => o.Length < 100);
-
+            
             var count = 0;
 
             using (res.Subscribe(

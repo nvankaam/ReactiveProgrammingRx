@@ -17,8 +17,12 @@ namespace Data.Repo
         public RepoApacheLogLine()
         {
             DateTimeFormat = "[dd/MMM/yyyy:HH:mm:ss+0200]";
+            LogLines = System.IO.File.ReadAllLines("Files/access_log.txt").Select(o => ParseLine(o));
         }
 
+        public IEnumerable<ApacheLogLine> LogLines{ get; set; }
+
+        
         /// <summary>
         /// Parses a single line into a apacha log line class
         /// </summary>
@@ -28,9 +32,11 @@ namespace Data.Repo
         {
             var result = new ApacheLogLine();
             var lines = line.Split(' ');
+            result.OriginalLine = line;
             result.IP = IPAddress.Parse(lines[0]);
             result.Date = DateTime.ParseExact(lines[3]+lines[4], DateTimeFormat, CultureInfo.InvariantCulture);
-            result.Command = lines[5]+lines[6]+lines[7];
+            result.Command = lines[5];
+            result.Url = lines[6];
             result.Status = (HttpStatusCode)Enum.Parse(typeof(HttpStatusCode), lines[8]);
             result.Time = int.Parse(lines[9]);
             result.UserAgent = lines[11];
