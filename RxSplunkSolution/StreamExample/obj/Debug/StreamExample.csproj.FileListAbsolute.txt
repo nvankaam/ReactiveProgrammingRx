@@ -1,28 +1,2 @@
-<<<<<<< HEAD
-C:\Users\Niels van Kaam\Documents\Studie\Reactive\Repo\RxSplunkSolution\StreamExample\bin\Debug\StreamExample.exe.config
-C:\Users\Niels van Kaam\Documents\Studie\Reactive\Repo\RxSplunkSolution\StreamExample\bin\Debug\StreamExample.exe
-C:\Users\Niels van Kaam\Documents\Studie\Reactive\Repo\RxSplunkSolution\StreamExample\bin\Debug\StreamExample.pdb
 C:\Users\Niels van Kaam\Documents\Studie\Reactive\Repo\RxSplunkSolution\StreamExample\obj\Debug\StreamExample.csprojResolveAssemblyReference.cache
-C:\Users\Niels van Kaam\Documents\Studie\Reactive\Repo\RxSplunkSolution\StreamExample\obj\Debug\StreamExample.exe
-C:\Users\Niels van Kaam\Documents\Studie\Reactive\Repo\RxSplunkSolution\StreamExample\obj\Debug\StreamExample.pdb
-=======
-D:\Programação\Source Code\ReactiveProgrammingRx\RxSplunkSolution\StreamExample\bin\Debug\StreamExample.exe.config
-D:\Programação\Source Code\ReactiveProgrammingRx\RxSplunkSolution\StreamExample\bin\Debug\StreamExample.exe
-D:\Programação\Source Code\ReactiveProgrammingRx\RxSplunkSolution\StreamExample\bin\Debug\StreamExample.pdb
-D:\Programação\Source Code\ReactiveProgrammingRx\RxSplunkSolution\StreamExample\bin\Debug\Data.dll
-D:\Programação\Source Code\ReactiveProgrammingRx\RxSplunkSolution\StreamExample\bin\Debug\System.Reactive.Core.dll
-D:\Programação\Source Code\ReactiveProgrammingRx\RxSplunkSolution\StreamExample\bin\Debug\System.Reactive.Interfaces.dll
-D:\Programação\Source Code\ReactiveProgrammingRx\RxSplunkSolution\StreamExample\bin\Debug\System.Reactive.Linq.dll
-D:\Programação\Source Code\ReactiveProgrammingRx\RxSplunkSolution\StreamExample\bin\Debug\System.Reactive.PlatformServices.dll
-D:\Programação\Source Code\ReactiveProgrammingRx\RxSplunkSolution\StreamExample\bin\Debug\Data.pdb
-D:\Programação\Source Code\ReactiveProgrammingRx\RxSplunkSolution\StreamExample\bin\Debug\System.Reactive.Core.xml
-D:\Programação\Source Code\ReactiveProgrammingRx\RxSplunkSolution\StreamExample\bin\Debug\System.Reactive.Interfaces.xml
-D:\Programação\Source Code\ReactiveProgrammingRx\RxSplunkSolution\StreamExample\bin\Debug\System.Reactive.Linq.xml
-D:\Programação\Source Code\ReactiveProgrammingRx\RxSplunkSolution\StreamExample\bin\Debug\System.Reactive.PlatformServices.xml
-D:\Programação\Source Code\ReactiveProgrammingRx\RxSplunkSolution\StreamExample\obj\Debug\StreamExample.csprojResolveAssemblyReference.cache
-D:\Programação\Source Code\ReactiveProgrammingRx\RxSplunkSolution\StreamExample\obj\Debug\StreamExample.exe
-D:\Programação\Source Code\ReactiveProgrammingRx\RxSplunkSolution\StreamExample\obj\Debug\StreamExample.pdb
-D:\Programação\Source Code\ReactiveProgrammingRx\RxSplunkSolution\StreamExample\bin\Debug\Files\access_log.txt
-D:\Programação\Source Code\ReactiveProgrammingRx\RxSplunkSolution\StreamExample\bin\Debug\System.Reactive.Windows.Forms.dll
-D:\Programação\Source Code\ReactiveProgrammingRx\RxSplunkSolution\StreamExample\bin\Debug\System.Reactive.Windows.Forms.xml
->>>>>>> db8e8958da823173349766d28fe462664600352f
+C:\Users\Niels van Kaam\Documents\Studie\Reactive\Repo\RxSplunkSolution\StreamExample\bin\Debug\StreamExample.exe.config

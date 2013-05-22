@@ -1,21 +1,4 @@
-<<<<<<< HEAD
 C:\Users\Niels van Kaam\Documents\Studie\Reactive\Repo\RxSplunkSolution\Core\bin\Debug\Core.dll
 C:\Users\Niels van Kaam\Documents\Studie\Reactive\Repo\RxSplunkSolution\Core\bin\Debug\Core.pdb
-C:\Users\Niels van Kaam\Documents\Studie\Reactive\Repo\RxSplunkSolution\Core\obj\Debug\Core.csprojResolveAssemblyReference.cache
 C:\Users\Niels van Kaam\Documents\Studie\Reactive\Repo\RxSplunkSolution\Core\obj\Debug\Core.dll
 C:\Users\Niels van Kaam\Documents\Studie\Reactive\Repo\RxSplunkSolution\Core\obj\Debug\Core.pdb
-=======
-D:\Programação\Source Code\ReactiveProgrammingRx\RxSplunkSolution\Core\bin\Debug\Core.dll
-D:\Programação\Source Code\ReactiveProgrammingRx\RxSplunkSolution\Core\bin\Debug\Core.pdb
-D:\Programação\Source Code\ReactiveProgrammingRx\RxSplunkSolution\Core\obj\Debug\Core.csprojResolveAssemblyReference.cache
-D:\Programação\Source Code\ReactiveProgrammingRx\RxSplunkSolution\Core\obj\Debug\Core.dll
-D:\Programação\Source Code\ReactiveProgrammingRx\RxSplunkSolution\Core\obj\Debug\Core.pdb
-D:\Programação\Source Code\ReactiveProgrammingRx\RxSplunkSolution\Core\bin\Debug\System.Reactive.Core.dll
-D:\Programação\Source Code\ReactiveProgrammingRx\RxSplunkSolution\Core\bin\Debug\System.Reactive.Interfaces.dll
-D:\Programação\Source Code\ReactiveProgrammingRx\RxSplunkSolution\Core\bin\Debug\System.Reactive.Linq.dll
-D:\Programação\Source Code\ReactiveProgrammingRx\RxSplunkSolution\Core\bin\Debug\System.Reactive.PlatformServices.dll
-D:\Programação\Source Code\ReactiveProgrammingRx\RxSplunkSolution\Core\bin\Debug\System.Reactive.Core.xml
-D:\Programação\Source Code\ReactiveProgrammingRx\RxSplunkSolution\Core\bin\Debug\System.Reactive.Interfaces.xml
-D:\Programação\Source Code\ReactiveProgrammingRx\RxSplunkSolution\Core\bin\Debug\System.Reactive.Linq.xml
-D:\Programação\Source Code\ReactiveProgrammingRx\RxSplunkSolution\Core\bin\Debug\System.Reactive.PlatformServices.xml
->>>>>>> db8e8958da823173349766d28fe462664600352f
