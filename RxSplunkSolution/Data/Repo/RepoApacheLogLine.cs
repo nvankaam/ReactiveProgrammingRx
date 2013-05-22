@@ -33,7 +33,7 @@ namespace Data.Repo
             var result = new ApacheLogLine();
             var lines = line.Split(' ');
             result.OriginalLine = line;
-            result.IP = IPAddress.Parse(lines[0]);
+            result.IP = lines[0];
             result.Date = DateTime.ParseExact(lines[3]+lines[4], DateTimeFormat, CultureInfo.InvariantCulture);
             result.Command = lines[5].Trim('"');
             result.Url = lines[6];

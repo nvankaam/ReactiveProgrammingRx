@@ -10,7 +10,7 @@ namespace Data.Model
     public class ApacheLogLine
     {
         public string OriginalLine { get; set; }
-        public IPAddress IP { get; set; }
+        public string IP { get; set; }
         public DateTime Date { get; set; }
         //TODO: Parse aswell
         public String Command { get; set; }
