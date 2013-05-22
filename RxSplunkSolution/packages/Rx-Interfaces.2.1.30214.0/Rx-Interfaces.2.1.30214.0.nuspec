@@ -17,5 +17,9 @@
     <frameworkAssemblies>
       <frameworkAssembly assemblyName="System.Observable" targetFramework="Silverlight4.0-WindowsPhone71" />
     </frameworkAssemblies>
+    <references>
+      <reference file="System.Reactive.Interfaces.dll" />
+      <reference file="_._" />
+    </references>
   </metadata>
 </package>

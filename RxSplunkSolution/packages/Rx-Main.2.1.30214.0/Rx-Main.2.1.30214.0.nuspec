@@ -21,5 +21,6 @@
       <dependency id="Rx-Linq" version="2.1.30214.0" />
       <dependency id="Rx-PlatformServices" version="2.1.30214.0" />
     </dependencies>
+    <references />
   </metadata>
 </package>
