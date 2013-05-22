@@ -24,7 +24,7 @@ void Main()
 	var file = new RepoApacheLogLine().LogLines.ToObservable();
 	var lines = System.IO.File.ReadAllLines("access_log.txt").ToObservable();
 	
-	var res = lines.Where(o => o.Length < 120);
+	var res = file.Take(10);
 	
 	var count = 0;
 
