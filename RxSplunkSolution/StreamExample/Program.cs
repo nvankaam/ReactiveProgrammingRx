@@ -21,6 +21,8 @@ namespace StreamExample
             
             var count = 0;
 
+            var res = file;
+
             using (res.Subscribe(
                 logs => {
                     Console.WriteLine(logs);

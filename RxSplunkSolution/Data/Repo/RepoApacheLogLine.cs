@@ -14,10 +14,10 @@ namespace Data.Repo
     {
         public string DateTimeFormat { get; set; }
 
-        public RepoApacheLogLine()
+        public RepoApacheLogLine(string filename = "..\\RxSplunkSolution\\Data\\Files\\access_log.txt")
         {
             DateTimeFormat = "[dd/MMM/yyyy:HH:mm:ss+0200]";
-            LogLines = System.IO.File.ReadAllLines("Files/access_log.txt").Select(o => ParseLine(o));
+            LogLines = System.IO.File.ReadAllLines(filename).Select(o => ParseLine(o));
         }
 
         public IEnumerable<ApacheLogLine> LogLines{ get; set; }
@@ -35,11 +35,11 @@ namespace Data.Repo
             result.OriginalLine = line;
             result.IP = IPAddress.Parse(lines[0]);
             result.Date = DateTime.ParseExact(lines[3]+lines[4], DateTimeFormat, CultureInfo.InvariantCulture);
-            result.Command = lines[5];
+            result.Command = lines[5].Trim('"');
             result.Url = lines[6];
             result.Status = (HttpStatusCode)Enum.Parse(typeof(HttpStatusCode), lines[8]);
             result.Time = int.Parse(lines[9]);
-            result.UserAgent = lines[11];
+            result.UserAgent = lines[11].Trim('"');
             return result;
         }
     }
