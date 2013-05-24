@@ -24,7 +24,7 @@
 
 void Main()
 {
-	var apacheList = new RepoApacheLogLine("access_log.txt").LogLines.ToList();
+	var apacheList = new RepoApacheLogLine("access_log.txt").LogLines.Take(100).ToList();
 	Utils.Shuffle<ApacheLogLine>(apacheList);
 	var apacheListObservable = apacheList.ToObservable();
 	
@@ -45,16 +45,14 @@ void Main()
 				o => {
 				return o.Date.Ticks / timeInterval.Ticks;
 				}
-			).SelectMany(o => o.FirstAsync());
-			
+			);
+	int i = 0;
 			
 	x.Subscribe(
-			logs => {
-				Console.WriteLine(logs.Date +" - "+ DateTime.Now.Millisecond);
-				Console.WriteLine(count++);
-			},
-			error => {Console.WriteLine("ERROR");}, () => {Console.WriteLine("Count: "+count);}
-		);
+		groups => {
+				groups.Subscribe(line => Console.WriteLine("Date "+(i++)+" is: "+line.Date));
+			});
+	
 
 	
 
