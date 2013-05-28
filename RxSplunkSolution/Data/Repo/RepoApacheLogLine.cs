@@ -7,6 +7,11 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using System.Reactive;
+using System.Reactive.Linq;
+using System.Reactive.Subjects;
+using System.Diagnostics;
+
 
 namespace Data.Repo
 {
@@ -14,7 +19,7 @@ namespace Data.Repo
     {
         public string DateTimeFormat { get; set; }
 
-        public RepoApacheLogLine(string filename = "..\\RxSplunkSolution\\Data\\Files\\access_log.txt")
+        public RepoApacheLogLine(string filename = "..\\..\\..\\Data\\Files\\access_log.txt")
         {
             DateTimeFormat = "[dd/MMM/yyyy:HH:mm:ss+0200]";
             LogLines = System.IO.File.ReadAllLines(filename).Select(o => ParseLine(o));
@@ -22,6 +27,28 @@ namespace Data.Repo
 
         public IEnumerable<ApacheLogLine> LogLines{ get; set; }
 
+        public IObservable<ApacheLogLine> GetObservableLogLines(Int64 speed)
+        {
+            var lastTime = LogLines.First().Date;
+            var enumerator = LogLines.GetEnumerator();
+
+            var observable = Observable.Generate(
+                    enumerator,
+                    value => value.MoveNext(),
+                    value => value,
+                    value => value.Current,
+                    value => {
+                        var result = TimeSpan.FromMilliseconds((value.Current.Date - lastTime).TotalMilliseconds / speed);
+                        lastTime = value.Current.Date;
+                        return result;
+                    });
+
+            observable.Subscribe(o => 
+                Debug.WriteLine(o)
+                );
+
+            return observable;
+        }
         
         /// <summary>
         /// Parses a single line into a apacha log line class

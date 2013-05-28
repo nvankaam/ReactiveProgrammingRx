@@ -4,6 +4,7 @@ using Data.Model;
 using System.Net;
 using Data.Repo;
 using System.Globalization;
+using System.Threading;
 
 namespace UnitTests
 {
@@ -19,6 +20,15 @@ namespace UnitTests
             var repo = new RepoApacheLogLine();
             var parsed = repo.ParseLine(LogLineString);
             Assert.AreEqual(LogLine, parsed);
+        }
+
+        [TestMethod]
+        public void TestGetObservable()
+        {
+            var repo = new RepoApacheLogLine();
+            var observable = repo.GetObservableLogLines(100);
+
+            Thread.Sleep(10000);
         }
 
         [TestInitialize()]

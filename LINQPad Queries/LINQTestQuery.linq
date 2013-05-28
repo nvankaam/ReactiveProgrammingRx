@@ -1,5 +1,13 @@
 <Query Kind="Program">
+  <Reference>&lt;RuntimeDirectory&gt;\Accessibility.dll</Reference>
   <Reference Relative="..\RxSplunkSolution\Data\bin\Debug\Data.dll">&lt;MyDocuments&gt;\Studie\Reactive\Repo\RxSplunkSolution\Data\bin\Debug\Data.dll</Reference>
+  <Reference>&lt;RuntimeDirectory&gt;\System.Configuration.dll</Reference>
+  <Reference>&lt;RuntimeDirectory&gt;\System.Deployment.dll</Reference>
+  <Reference>&lt;RuntimeDirectory&gt;\System.Runtime.Serialization.Formatters.Soap.dll</Reference>
+  <Reference>&lt;RuntimeDirectory&gt;\System.Security.dll</Reference>
+  <Reference>&lt;RuntimeDirectory&gt;\System.Windows.Forms.DataVisualization.dll</Reference>
+  <Reference>&lt;RuntimeDirectory&gt;\System.Windows.Forms.dll</Reference>
+  <NuGetReference>Linq2Charts</NuGetReference>
   <NuGetReference>Rx-Main</NuGetReference>
   <Namespace>Data.Model</Namespace>
   <Namespace>Data.Repo</Namespace>
@@ -9,6 +17,8 @@
   <Namespace>System.Globalization</Namespace>
   <Namespace>System.IO</Namespace>
   <Namespace>System.Linq</Namespace>
+  <Namespace>System.Linq.Charting</Namespace>
+  <Namespace>System.Net</Namespace>
   <Namespace>System.Net</Namespace>
   <Namespace>System.Reactive</Namespace>
   <Namespace>System.Reactive.Concurrency</Namespace>
@@ -18,12 +28,21 @@
   <Namespace>System.Reactive.PlatformServices</Namespace>
   <Namespace>System.Reactive.Subjects</Namespace>
   <Namespace>System.Reactive.Threading.Tasks</Namespace>
+  <Namespace>System.Runtime.CompilerServices</Namespace>
   <Namespace>System.Text</Namespace>
   <Namespace>System.Threading.Tasks</Namespace>
+  <Namespace>System.Windows.Forms</Namespace>
 </Query>
 
 void Main()
 {
+	var columns = new Column{ Points = {}, LegendText = "Apache Log" };
+	var chart = new Chart
+	{ ChartAreas = { new ChartArea { Series = { columns }} }
+	, Dock = DockStyle.Fill,
+	};
+	chart.Dump("Apache Log");
+
 	var apacheList = new RepoApacheLogLine("access_log.txt").LogLines.Take(100).ToList();
 	Utils.Shuffle<ApacheLogLine>(apacheList);
 	var apacheListObservable = apacheList.ToObservable();
@@ -53,7 +72,16 @@ void Main()
 				groups.Subscribe(line => Console.WriteLine("Date "+(i++)+" is: "+line.Date));
 			});
 	
-
+x.ObserveOn(chart.con
+x.ObserveOn(chart).Subscribe(v =>
+{
+	chart.BeginInit();
+	
+		columns.BasePoints.Clear();
+		//foreach(var point in v.Points) columns.Add(point.Address, point.Count);
+		
+	chart.EndInit();
+});
 	
 
 //	Console.ReadLine();
