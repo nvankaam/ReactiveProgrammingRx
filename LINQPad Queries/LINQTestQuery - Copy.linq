@@ -37,7 +37,7 @@
 void Main()
 {
 	
-	// Chart creation
+	// Create chart
 	var columns = new Column{ Points = {}, LegendText = "Apache Log" };
 	var chart = new Chart
 	{ ChartAreas = { new ChartArea { Series = { columns }} }
@@ -47,13 +47,11 @@ void Main()
 
 	// Get information from log
 	var apacheList = new RepoApacheLogLine("access_log.txt");
-	var timeGeneratedApacheList = apacheList.GetObservableLogLines(1000L);
+	var timeGeneratedApacheList = apacheList.GetObservableLogLines(60L);
 	
-	/*
 	timeGeneratedApacheList.Subscribe(
-		line => { Console.WriteLine(line.IP); }
+		line => { Console.WriteLine(line.Date); }
 	);
-	*/
 	
 //	Console.ReadLine();
 }
