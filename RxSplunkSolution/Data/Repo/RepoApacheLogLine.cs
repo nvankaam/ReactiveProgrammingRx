@@ -43,9 +43,11 @@ namespace Data.Repo
                         return result;
                     });
 
+            /*
             observable.Subscribe(o => 
                 Debug.WriteLine(o)
                 );
+             */
 
             return observable;
         }
