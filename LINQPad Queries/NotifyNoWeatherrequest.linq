@@ -19,6 +19,7 @@
   <Namespace>System.Linq</Namespace>
   <Namespace>System.Linq.Charting</Namespace>
   <Namespace>System.Net</Namespace>
+  <Namespace>System.Net</Namespace>
   <Namespace>System.Reactive</Namespace>
   <Namespace>System.Reactive.Concurrency</Namespace>
   <Namespace>System.Reactive.Disposables</Namespace>
@@ -43,18 +44,19 @@ void Main()
 	, Dock = DockStyle.Fill,
 	};
 	chart.Dump("Apache Log");
-
+	var timestampNow = DateTime.Now;
 	// Get information from log
 	var apacheList = new RepoApacheLogLine("access_log.txt");
-	var timeGeneratedApacheList = apacheList.GetObservableLogLines(6000L);
-/*
-	var consoleRes = timeGeneratedApacheList.Window(TimeSpan.FromSeconds(5));
-	
-	consoleRes.Subscribe(
-		lines => { lines.ToList().Dump(); }
-	);*/
+	var timeGeneratedApacheList = apacheList.GetObservableLogLines(1L);
 
-	var graphRes = from window in timeGeneratedApacheList.Window(TimeSpan.FromSeconds(0.1))
+	timeGeneratedApacheList
+	.LogTimestampedValues(o => {
+		Debug.WriteLine("Got a logline on "+(o.Timestamp - timestampNow).TotalSeconds);
+		timestampNow = DateTime.Now;
+	});
+	//.Throttle(TimeSpan.FromMilliseconds(1000000)).Subscribe(o => Debug.WriteLine("Error: No request after logline: "+o));
+
+	var graphRes = from window in timeGeneratedApacheList.Window(TimeSpan.FromSeconds(1))
 				from stats in
                   (   // calculate statistics within one window
                       from line in window
@@ -83,22 +85,13 @@ void Main()
 			chart.EndInit(); }
 	);
 }
+	
+	public static class Utils {
+	public static IObservable<T> LogTimestampedValues<T>(this IObservable<T> source, Action<Timestamped<T>> onNext)
+        {
+            return source.Timestamp().Do(onNext).Select(x => x.Value);
+        }
 
-
-public static class Utils {
-public static void Shuffle<T>(this IList<T> list)  
-	{  
-		Random rng = new Random();  
-		int n = list.Count;  
-		while (n > 1) {  
-			n--;  
-			int k = rng.Next(n + 1);  
-			T value = list[k];  
-			list[k] = list[n];  
-			list[n] = value;  
-		}  
 	}
-
-}
 
 // Define other methods and classes here
