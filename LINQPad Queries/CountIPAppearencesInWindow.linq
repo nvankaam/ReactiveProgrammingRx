@@ -1,6 +1,6 @@
 <Query Kind="Program">
   <Reference>&lt;RuntimeDirectory&gt;\Accessibility.dll</Reference>
-  <Reference Relative="..\RxSplunkSolution\Data\bin\Debug\Data.dll">D:\Programação\Source Code\ReactiveProgrammingRx\RxSplunkSolution\Data\bin\Debug\Data.dll</Reference>
+  <Reference Relative="..\RxSplunkSolution\Data\bin\Debug\Data.dll">&lt;MyDocuments&gt;\Studie\Reactive\Repo\RxSplunkSolution\Data\bin\Debug\Data.dll</Reference>
   <Reference>&lt;RuntimeDirectory&gt;\System.Configuration.dll</Reference>
   <Reference>&lt;RuntimeDirectory&gt;\System.Deployment.dll</Reference>
   <Reference>&lt;RuntimeDirectory&gt;\System.Runtime.Serialization.Formatters.Soap.dll</Reference>
@@ -46,7 +46,7 @@ void Main()
 
 	// Get information from log
 	var apacheList = new RepoApacheLogLine("access_log.txt");
-	var timeGeneratedApacheList = apacheList.GetObservableLogLines(60L);
+	var timeGeneratedApacheList = apacheList.GetObservableLogLines(6000L);
 /*
 	var consoleRes = timeGeneratedApacheList.Window(TimeSpan.FromSeconds(5));
 	
@@ -54,7 +54,7 @@ void Main()
 		lines => { lines.ToList().Dump(); }
 	);*/
 
-	var graphRes = from window in timeGeneratedApacheList.Window(TimeSpan.FromSeconds(5))
+	var graphRes = from window in timeGeneratedApacheList.Window(TimeSpan.FromSeconds(0.1))
 				from stats in
                   (   // calculate statistics within one window
                       from line in window

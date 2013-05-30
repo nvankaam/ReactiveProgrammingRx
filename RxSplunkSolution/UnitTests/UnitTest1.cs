@@ -26,9 +26,9 @@ namespace UnitTests
         public void TestGetObservable()
         {
             var repo = new RepoApacheLogLine();
-            var observable = repo.GetObservableLogLines(100);
+            var observable = repo.GetObservableLogLines(10000);
 
-            Thread.Sleep(10000);
+            Thread.Sleep(100000);
         }
 
         [TestInitialize()]
