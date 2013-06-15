@@ -19,7 +19,6 @@
   <Namespace>System.Linq</Namespace>
   <Namespace>System.Linq.Charting</Namespace>
   <Namespace>System.Net</Namespace>
-  <Namespace>System.Net</Namespace>
   <Namespace>System.Reactive</Namespace>
   <Namespace>System.Reactive.Concurrency</Namespace>
   <Namespace>System.Reactive.Disposables</Namespace>
@@ -36,54 +35,59 @@
 
 void Main()
 {
+	var concurrentInterval = 60;
+	
+	// Create chart
 	var columns = new Column{ Points = {}, LegendText = "Apache Log" };
 	var chart = new Chart
 	{ ChartAreas = { new ChartArea { Series = { columns }} }
-	, Dock = DockStyle.Fill,
+	, Dock = DockStyle.Bottom,
 	};
 	chart.Dump("Apache Log");
 
-	var apacheList = new RepoApacheLogLine("access_log.txt").LogLines.Take(100).ToList();
-	Utils.Shuffle<ApacheLogLine>(apacheList);
-	var apacheListObservable = apacheList.ToObservable();
+	// Get information from log
+	var apacheList = new RepoApacheLogLine("access_log.txt");
+	var timeGeneratedApacheList = apacheList.GetObservableLogLines(60L);
+/*
+	var consoleRes = timeGeneratedApacheList.Window(TimeSpan.FromSeconds(5));
 	
-	var apacheObservable = Observable.Create<ApacheLogLine>(o =>
-	{
-		var els = new EventLoopScheduler();
-		return apacheListObservable.ObserveOn(els)
-		.Do(xx => els.Schedule(() => Thread.Sleep(10)))
-		.Subscribe(o);
-	}
-	);
-	//var apacheLines = apacheList.ToObservable();
-	var timeInterval = new TimeSpan(0,15,0); //15 minutes
-	var count = 0;
-	
-	var x = apacheObservable
-			.GroupBy(
-				o => {
-				return o.Date.Ticks / timeInterval.Ticks;
-				}
-			);
-	int i = 0;
-			
-	x.Subscribe(
-		groups => {
-				groups.Subscribe(line => Console.WriteLine("Date "+(i++)+" is: "+line.Date));
-			});
-	
-x.ObserveOn(chart).Subscribe(v =>
-{
-	chart.BeginInit();
-	
-		columns.BasePoints.Clear();
-		//foreach(var point in v.Points) columns.Add(point.Address, point.Count);
-		
-	chart.EndInit();
-});
+	consoleRes.Subscribe(
+		lines => { lines.ToList().Dump(); }
+	);*/
+
+	var concurent = 
+		from entireLog in timeGeneratedApacheList
+		where 
 	
 
-//	Console.ReadLine();
+	var graphRes = from window in timeGeneratedApacheList.Window(TimeSpan.FromSeconds(1))
+				from stats in
+                  (   // calculate statistics within one window
+                      from line in window
+                      group line by line.IP into g
+                      from Count in g.Count()
+                      select new
+                      {
+                          g.Key,
+                          Count
+                      }).ToList()
+              select new { 
+			  		stats.Count, 
+					Points=from s in stats orderby s.Count descending 
+					       select new { s.Count, Address = s.Key }
+				};
+	
+	var count = 0;
+	
+	graphRes.Subscribe(
+		lines => {
+			chart.BeginInit(); 
+			columns.BasePoints.Clear();
+			count++;
+			foreach(var point in lines.Points) columns.Add(point.Address, point.Count);
+			//columns.Add("Windows Rcv",lines.Count);
+			chart.EndInit(); }
+	);
 }
 
 
