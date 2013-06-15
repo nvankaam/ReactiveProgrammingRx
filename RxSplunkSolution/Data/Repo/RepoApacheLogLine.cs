@@ -43,13 +43,9 @@ namespace Data.Repo
                         return result;
                     });
 
-            /*
-            observable.Subscribe(o => 
-                Debug.WriteLine(o)
-                );
-             */
-
-            return observable;
+			var subj = new Subject<ApacheLogLine>();
+			observable.Subscribe(tsst => subj.OnNext(tsst));
+			return subj;
         }
         
         /// <summary>

@@ -54,7 +54,6 @@ namespace UnitTests
 		{
 			using (var db = new RepoEF())
 			{
-
 				var geoIp = new GeoIp() { Ip = "Test" + DateTime.Now, Lat = 1337, Long = 80085 };
 				db.GeoIps.Add(geoIp);
 				db.SaveChanges();
@@ -70,10 +69,7 @@ namespace UnitTests
 					Debug.WriteLine(item.Ip);
 				}
 			}
-
 			Console.WriteLine("Done...");
-			
-		
 		}
 	}
 }

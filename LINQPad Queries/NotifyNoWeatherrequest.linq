@@ -1,6 +1,6 @@
 <Query Kind="Program">
   <Reference>&lt;RuntimeDirectory&gt;\Accessibility.dll</Reference>
-  <Reference Relative="..\RxSplunkSolution\Data\bin\Debug\Data.dll">D:\Programação\Source Code\ReactiveProgrammingRx\RxSplunkSolution\Data\bin\Debug\Data.dll</Reference>
+  <Reference Relative="..\RxSplunkSolution\Data\bin\Debug\Data.dll">&lt;MyDocuments&gt;\Studie\Reactive\Repo\RxSplunkSolution\Data\bin\Debug\Data.dll</Reference>
   <Reference>&lt;RuntimeDirectory&gt;\System.Configuration.dll</Reference>
   <Reference>&lt;RuntimeDirectory&gt;\System.Deployment.dll</Reference>
   <Reference>&lt;RuntimeDirectory&gt;\System.Runtime.Serialization.Formatters.Soap.dll</Reference>
@@ -38,6 +38,8 @@ void Main()
 {
 	
 	// Create chart
+	DateTime lastTime = DateTime.Now;
+	
 	var columns = new Column{ Points = {}, LegendText = "Apache Log" };
 	var chart = new Chart
 	{ ChartAreas = { new ChartArea { Series = { columns }} }
@@ -48,44 +50,60 @@ void Main()
 	// Get information from log
 	var apacheList = new RepoApacheLogLine("access_log.txt");
 	var timeGeneratedApacheList = apacheList.GetObservableLogLines(1L);
+	
 
-	var test = timeGeneratedApacheList
-	.LogTimestampedValues(o => {
-		Console.WriteLine("Got a logline on "+(o.Timestamp - timestampNow).TotalSeconds);
-		timestampNow = DateTime.Now;
-	});
+//	var test = timeGeneratedApacheList
+//	.LogTimestampedValues(o => {
+//		Console.WriteLine("Got a logline on "+(o.Timestamp - timestampNow).TotalSeconds + o.Value.OriginalLine);
+//		timestampNow = DateTime.Now;
+//	});
 	//.Throttle(TimeSpan.FromMilliseconds(1000000)).Subscribe(o => Debug.WriteLine("Error: No request after logline: "+o));
 
-	test.Subscribe();
-
-	var graphRes = from window in timeGeneratedApacheList.Window(TimeSpan.FromSeconds(1))
-				from stats in
-                  (   // calculate statistics within one window
-                      from line in window
-                      group line by line.IP into g
-                      from Count in g.Count()
-                      select new
-                      {
-                          g.Key,
-                          Count
-                      }).ToList()
-              select new { 
-			  		stats.Count, 
-					Points=from s in stats orderby s.Count descending 
-					       select new { s.Count, Address = s.Key }
-				};
-	
-	var count = 0;
-	
-	graphRes.Subscribe(
-		lines => {
-			chart.BeginInit(); 
-			columns.BasePoints.Clear();
-			count++;
-			foreach(var point in lines.Points) columns.Add(point.Address, point.Count);
-			//columns.Add("Windows Rcv",lines.Count);
-			chart.EndInit(); }
+	var subscription = timeGeneratedApacheList.Subscribe(
+		line => {
+			Console.WriteLine("Got a logline on {0} with string {1}", (DateTime.Now - lastTime).TotalSeconds, line.OriginalLine);
+			lastTime = DateTime.Now;
+		}	
 	);
+
+
+
+	var subscription2 = timeGeneratedApacheList.Subscribe(
+		line => {
+			Console.WriteLine("2 Got a logline on {0} with string {1}", (DateTime.Now - lastTime).TotalSeconds, line.OriginalLine);
+			lastTime = DateTime.Now;
+		}	
+	);
+
+//
+//	var graphRes = from window in timeGeneratedApacheList.Window(TimeSpan.FromSeconds(1))
+//				from stats in
+//                  (   // calculate statistics within one window
+//                      from line in window
+//                      group line by line.IP into g
+//                      from Count in g.Count()
+//                      select new
+//                      {
+//                          g.Key,
+//                          Count
+//                      }).ToList()
+//              select new { 
+//			  		stats.Count, 
+//					Points=from s in stats orderby s.Count descending 
+//					       select new { s.Count, Address = s.Key }
+//				};
+//	
+//	var count = 0;
+//	
+//	graphRes.Subscribe(
+//		lines => {
+//			chart.BeginInit(); 
+//			columns.BasePoints.Clear();
+//			count++;
+//			foreach(var point in lines.Points) columns.Add(point.Address, point.Count);
+//			//columns.Add("Windows Rcv",lines.Count);
+//			chart.EndInit(); }
+//	);
 }
 	
 	public static class Utils {
