@@ -1,6 +1,6 @@
 <Query Kind="Program">
   <Reference>&lt;RuntimeDirectory&gt;\Accessibility.dll</Reference>
-  <Reference Relative="..\RxSplunkSolution\Data\bin\Debug\Data.dll">&lt;MyDocuments&gt;\Studie\Reactive\Repo\RxSplunkSolution\Data\bin\Debug\Data.dll</Reference>
+  <Reference Relative="..\RxSplunkSolution\Data\bin\Debug\Data.dll">D:\Programação\Source Code\ReactiveProgrammingRx\RxSplunkSolution\Data\bin\Debug\Data.dll</Reference>
   <Reference>&lt;RuntimeDirectory&gt;\System.Configuration.dll</Reference>
   <Reference>&lt;RuntimeDirectory&gt;\System.Deployment.dll</Reference>
   <Reference>&lt;RuntimeDirectory&gt;\System.Runtime.Serialization.Formatters.Soap.dll</Reference>
@@ -49,12 +49,14 @@ void Main()
 	var apacheList = new RepoApacheLogLine("access_log.txt");
 	var timeGeneratedApacheList = apacheList.GetObservableLogLines(1L);
 
-	timeGeneratedApacheList
+	var test = timeGeneratedApacheList
 	.LogTimestampedValues(o => {
-		Debug.WriteLine("Got a logline on "+(o.Timestamp - timestampNow).TotalSeconds);
+		Console.WriteLine("Got a logline on "+(o.Timestamp - timestampNow).TotalSeconds);
 		timestampNow = DateTime.Now;
 	});
 	//.Throttle(TimeSpan.FromMilliseconds(1000000)).Subscribe(o => Debug.WriteLine("Error: No request after logline: "+o));
+
+	test.Subscribe();
 
 	var graphRes = from window in timeGeneratedApacheList.Window(TimeSpan.FromSeconds(1))
 				from stats in
