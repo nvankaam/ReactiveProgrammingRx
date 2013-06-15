@@ -52,21 +52,23 @@ namespace UnitTests
 		[TestMethod]
 		public void TestEF()
 		{
-			var db = new RepoEF();
-
-			var geoIp = new GeoIp() { Ip = "Test"+DateTime.Now, Lat = 1337, Long = 80085 };
-			db.GeoIps.Add(geoIp);
-			db.SaveChanges();
-
-			// Display all Blogs from the database
-			var query = from b in db.GeoIps
-						orderby b.Ip
-						select b;
-
-			Debug.WriteLine("All geoips in the database:");
-			foreach (var item in query)
+			using (var db = new RepoEF())
 			{
-				Debug.WriteLine(item.Ip);
+
+				var geoIp = new GeoIp() { Ip = "Test" + DateTime.Now, Lat = 1337, Long = 80085 };
+				db.GeoIps.Add(geoIp);
+				db.SaveChanges();
+
+				// Display all Blogs from the database
+				var query = from b in db.GeoIps
+							orderby b.Ip
+							select b;
+
+				Debug.WriteLine("All geoips in the database:");
+				foreach (var item in query)
+				{
+					Debug.WriteLine(item.Ip);
+				}
 			}
 
 			Console.WriteLine("Done...");
