@@ -1,6 +1,6 @@
 <Query Kind="Program">
   <Reference>&lt;RuntimeDirectory&gt;\Accessibility.dll</Reference>
-  <Reference Relative="..\RxSplunkSolution\Data\bin\Debug\Data.dll">D:\Programação\Source Code\ReactiveProgrammingRx\RxSplunkSolution\Data\bin\Debug\Data.dll</Reference>
+  <Reference Relative="..\RxSplunkSolution\Data\bin\Debug\Data.dll">&lt;MyDocuments&gt;\Studie\Reactive\Repo\RxSplunkSolution\Data\bin\Debug\Data.dll</Reference>
   <Reference>&lt;RuntimeDirectory&gt;\System.Configuration.dll</Reference>
   <Reference>&lt;RuntimeDirectory&gt;\System.Deployment.dll</Reference>
   <Reference>&lt;RuntimeDirectory&gt;\System.Runtime.Serialization.Formatters.Soap.dll</Reference>
@@ -65,13 +65,15 @@ void Main()
                           g.Key,
                           Count
                       }).ToList()
-              select new { 
+              select new {
 			  		stats.Count, 
 					Points=from s in stats orderby s.Count descending 
 					       select new { s.Count, Address = s.Key }
 				};
 	
 	var count = 0;
+	
+	
 	
 	graphRes.Subscribe(
 		lines => {
