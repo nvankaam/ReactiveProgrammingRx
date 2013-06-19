@@ -67,49 +67,16 @@ void Main()
 		return new ActiveUserCount(){Moment = line.Date, Count = concurentList.Count()};
 	});
 	
-//	var subscription = timeGeneratedApacheList.Subscribe(
-//		line => {
-//			concurentList.Add(line);
-//			concurentList = concurentList.Where(o => o.Date.AddSeconds(concurrentInterval) > line.Date).ToList();
-//			concurentSubject.OnNext(new ActiveUserCount(){Moment = line.Date, Count = concurentList.Count()});
-//		}
-//	);
-	
-
-//	var totalWindows = 0;
-//	timeGeneratedApacheList.Window(TimeSpan.FromSeconds(concurrentInterval)).Subscribe(
-//		window =>  {
-//			totalWindows++;
-//			Console.WriteLine("Recieved a new window: "+totalWindows);
-//			var windowName = "Window"+totalWindows;
-//			window.Subscribe(
-//				value => Console.WriteLine("{0} : {1}", windowName, value.OriginalLine),
-//				ex => Console.WriteLine("{0} : {1}", windowName, ex),
-//				() => Console.WriteLine("{0} Completed", windowName)
-//			);
-//		}
-//		,
-//		() => Console.WriteLine("Completed")
-//	);
-	
-	
 	var totalWindows = 0;
 	
 	var windowObservable = concurentObservable.Window(TimeSpan.FromSeconds(windowSize)).SelectMany(window => {
 		totalWindows++;
-//		Console.WriteLine("Created a new concurrent window: "+totalWindows);
 		var windowName = "Window"+totalWindows;
-//		window.Subscribe(
-//			value => Console.WriteLine("{0} : {1} ({2})", windowName, value.Moment, value.Count),
-//			ex => Console.WriteLine("{0} : {1}", windowName, ex),
-//			() => Console.WriteLine("{0} Completed", windowName)
-//		);
 		return window.Max(o => o.Count).Select(maxValue => {
 			return new ActiveUserCount{ Count = maxValue, WindowName = windowName };
 			
 		});		
 	});
-	
 	var graphObservable = windowObservable.Window(10, 1).SelectMany(graphWindow => {
 		return graphWindow.ToList().Select(actionList => new GraphPoint() {Points=actionList});
 	});
