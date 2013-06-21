@@ -37,7 +37,7 @@ void Main()
 {
 	//Some confiugration options
 	var concurrentInterval = 60;
-	var simulationSpeed = 300L;
+	var simulationSpeed = 3000L;
 	var windowSize = (double)concurrentInterval/(double)simulationSpeed;
 
 	//Create the chart
