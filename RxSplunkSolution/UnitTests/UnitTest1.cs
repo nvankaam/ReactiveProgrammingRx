@@ -64,7 +64,7 @@ namespace UnitTests
 		{
 			using (var db = new RepoEF())
 			{
-				var geoIp = new GeoIp() { Ip = "Test" + DateTime.Now, Lat = 1337, Long = 80085 };
+                var geoIp = new GeoIp() { Ip = "66.249.76.78", Lat = 37, Long = -122 };
 				db.GeoIps.Add(geoIp);
 				db.SaveChanges();
 
@@ -83,13 +83,24 @@ namespace UnitTests
 		}
 
         [TestMethod]
+        public void EFGetAsync()
+        {
+            using (var db = new RepoEF())
+            {
+                var position = db.get("83.86.171.177");
+                Debug.WriteLine("Position: " + position);
+            }
+        }
+
+        [TestMethod]
         public void EFGet()
         {
             using (var db = new RepoEF())
             {
-                var position = db.get(1337, 80085);
-                Debug.WriteLine("Position: " + position);
+                var position = db.get("83.86.171.177");
+                Debug.WriteLine(position.Lat+" "+position.Long);
             }
         }
+
 	}
 }
