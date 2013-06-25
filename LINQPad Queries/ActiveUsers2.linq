@@ -73,7 +73,6 @@ void Main()
 		var windowName = "Window"+totalWindows;
 		return window.Max(o => o.Count).Select(maxValue => {
 			return new ActiveUserCount{ Count = maxValue, WindowName = windowName };
-			
 		});		
 	});
 	
@@ -107,11 +106,11 @@ public class ActiveUserCount {
 
 
 public class GraphPoint {
-	public IList<ActiveUserCount> Points { get; set;}
+	public IList<ActiveUserCount> Points {get; set;}
 }
 
 public static class Utils {
-	
+
 }
 
 // Define other methods and classes here

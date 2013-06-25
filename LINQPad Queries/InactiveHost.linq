@@ -37,25 +37,36 @@ void Main()
 {
 	//Some confiugration options
 	var concurrentInterval = 60;
-	var simulationSpeed = 3000000L;
+	var simulationSpeed = 3000L;
 	var windowSize = (double)concurrentInterval/(double)simulationSpeed;
 
 	// Get information from log
 	var repository = new RepoApacheLogLine("access_log.txt");
 	var timeGeneratedApacheList = repository.GetObservableLogLines(simulationSpeed);
 	
-//	var tupleObserver = timeGeneratedApacheList.GroupBy(line => line.IP)
-//		.Select(grp => 
-//			Tuple.Create(grp.Key, grp.Max(lineInGroup => lineInGroup.Date))
-//		);
-//		
-//	tupleObserver.Subscribe(ip => {
-//		Console.WriteLine(String.Format("Got typle: {0}", ip.Item1));
-//		ip.Item2.Subscribe(o => Console.WriteLine("{0} updated on {1}", ip.Item1, o));
-//		
-//	});
-//	
 	
+//	timeGeneratedApacheList.DumpLive("grid");
+	var ipObservers = timeGeneratedApacheList.GroupBy(line => line.IP);
+	
+	
+	ipObservers.Subscribe(
+		ip => {
+			Console.WriteLine(String.Format("Got tuple: {0}", ip.Key));
+			ip.Subscribe(o => Console.WriteLine("{0} updated on {1}", ip.Key, o));
+		}
+	);
+	
+	ipObservers.Select(group => {
+		return Tuple.Create(group.Key, group.Latest().First().Date);
+	}).Select(o => o.Item1).DumpLive("grid");
+	
+	
+	
+	ipObservers.Buffer(100).DumpLive();
+
+//	ipObservers.Select(o => {
+//		return Tuple.Create(o.Key, o.Last().Date).
+//	}).
 }
 
 public static class Utils {

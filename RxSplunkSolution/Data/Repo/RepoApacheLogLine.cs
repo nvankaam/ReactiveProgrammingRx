@@ -37,34 +37,51 @@ namespace Data.Repo
 			var enumerator = LogLines.GetEnumerator();
 			var numberOfChunks = lines.Count / Chunksize;
 
+			var stream2 = Observable.Create<ApacheLogLine>(async (observer, cancel) =>
+			{
+				var lastTime = lines.First().Date;
+				foreach(var line in lines)
+				{
+					var totalSeconds = (line.Date - lastTime).TotalMilliseconds;
+					if (totalSeconds < 0)
+						totalSeconds = 0; //Sometimes it seems not all lines are in the correct order
+					var interval = TimeSpan.FromMilliseconds(totalSeconds);
+					var result = TimeSpan.FromMilliseconds(totalSeconds / (double)speed);
+					lastTime = line.Date;
+					await Task.Delay(result);
+					observer.OnNext(line);
+				};
+				observer.OnCompleted();
+			});
+
 			//Fix from http://stackoverflow.com/questions/13462713/why-does-observable-generate-throw-system-stackoverflowexception
 			//To prevent stackoverflow due to recursive implementation of Observable.generate
 			//Basically Observable.generate is called multiple times  for each chunk (where a chunk contains 10000 lines)
-			var time = new HistoricalScheduler(beginTime);
-			var streams =
-			from chunkIndex in Enumerable.Range(0, (int)Math.Ceiling((double)lines.Count / Chunksize) - 1)
-			let startIdx = chunkIndex * Chunksize
-			let endIdx = Math.Min(lines.Count, startIdx + Chunksize)
-			select Observable.Generate(
-				startIdx,
-				s => s < endIdx,
-				s => s + 1,
-				s => lines[s],
-				s => lines[s].Date,
-				time
-				);
+			//var time = new HistoricalScheduler(beginTime);
+			//var streams =
+			//from chunkIndex in Enumerable.Range(0, (int)Math.Ceiling((double)lines.Count / Chunksize) - 1)
+			//let startIdx = chunkIndex * Chunksize
+			//let endIdx = Math.Min(lines.Count, startIdx + Chunksize)
+			//select Observable.Generate(
+			//	startIdx,
+			//	s => s < endIdx,
+			//	s => s + 1,
+			//	s => lines[s],
+			//	s => lines[s].Date,
+			//	time
+			//	);
 
-			//Merge all streems
-			var stream = Observable.Concat(streams);
+			////Merge all streems
+			//var stream = Observable.Concat(streams);
 
-			//Run the simulation in a seperate thread
-			SimulateLogLines(time, lines, speed);
+			////Run the simulation in a seperate thread
+			//SimulateLogLines(time, lines, speed);
 		
-			//Dirty fix to allow multiple subscribers.
-			//As this is just for testing purposes it is ok.
-			//var subj = new Subject<ApacheLogLine>();
-			//stream.Subscribe(tsst => subj.OnNext(tsst));
-			return stream;
+			////Dirty fix to allow multiple subscribers.
+			////As this is just for testing purposes it is ok.
+			////var subj = new Subject<ApacheLogLine>();
+			////stream.Subscribe(tsst => subj.OnNext(tsst));
+			return stream2;
 		}
 		
 		/// <summary>
