@@ -36,33 +36,54 @@
 void Main()
 {
 	//Some confiugration options
-	var concurrentInterval = 60;
+	var updateTime = 60;
 	var simulationSpeed = 3000L;
-	var windowSize = (double)concurrentInterval/(double)simulationSpeed;
+	var windowSize = (double)updateTime/(double)simulationSpeed;
 
 	// Get information from log
 	var repository = new RepoApacheLogLine("access_log.txt");
 	var timeGeneratedApacheList = repository.GetObservableLogLines(simulationSpeed);
 	
 	
-//	timeGeneratedApacheList.DumpLive("grid");
-	var ipObservers = timeGeneratedApacheList.GroupBy(line => line.IP);
+	//TODO: DumpLive Misses the first request
+	//TODO: Better implementation sorting the result based on the old requests
+	var ipGroups = timeGeneratedApacheList.GroupBy(line => line.IP).Subscribe(grp => {
+		grp.Select(o => o.Date).Dump(grp.Key);
+	});
+
+
+/*************************************************************************
+Testing junk
+*************************************************************************/
+
+
+
+//	ipGroups.Subscribe(
+//		ip => {
+//			Console.WriteLine(String.Format("Got tuple: {0}", ip.Key));
+//			ip.Subscribe(o => Console.WriteLine("{0} updated on {1}", ip.Key, o));
+//		}
+//	);
 	
-	
-	ipObservers.Subscribe(
-		ip => {
-			Console.WriteLine(String.Format("Got tuple: {0}", ip.Key));
-			ip.Subscribe(o => Console.WriteLine("{0} updated on {1}", ip.Key, o));
-		}
-	);
-	
-	ipObservers.Select(group => {
-		return Tuple.Create(group.Key, group.Latest().First().Date);
-	}).Select(o => o.Item1).DumpLive("grid");
-	
-	
-	
-	ipObservers.Buffer(100).DumpLive();
+//	var ipGroups = ipObservers.Select(group => {
+//		return Tuple.Create(group.Key, group.Latest().First().Date);
+//	});
+
+	//ipObservers.Select(o => Tuple.Create(o.Key, "a")).DumpLive();
+//	
+//	var displayTable = ipGroups.Window(TimeSpan.FromSeconds(windowSize)).Select(window => {
+//		return window.Select(grp => {
+//			return grp.Max(o=> o.Date).Select(o => Tuple.Create(grp.Key, o));
+//		});
+//	});
+
+//	ipGroups.SelectMany(o => o).DumpLive();
+
+//	ipGroups.Subscribe(grp => {
+//		grp.Select(o => o.Date).DumpLive(grp.Key);
+//	});
+//	
+	//ipObservers.Buffer(100).DumpLive();
 
 //	ipObservers.Select(o => {
 //		return Tuple.Create(o.Key, o.Last().Date).
