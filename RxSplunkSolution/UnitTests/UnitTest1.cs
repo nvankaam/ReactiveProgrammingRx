@@ -79,7 +79,17 @@ namespace UnitTests
 					Debug.WriteLine(item.Ip);
 				}
 			}
-			Console.WriteLine("Done...");
+			Debug.WriteLine("Done...");
 		}
+
+        [TestMethod]
+        public void EFGet()
+        {
+            using (var db = new RepoEF())
+            {
+                var position = db.get(1337, 80085);
+                Debug.WriteLine("Position: " + position);
+            }
+        }
 	}
 }
