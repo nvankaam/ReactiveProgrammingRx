@@ -35,71 +35,41 @@
 
 void Main()
 {
-	
-	// Create chart
-	var columns = new Column{ Points = {}, LegendText = "Apache Log" };
-	var chart = new Chart
-	{ ChartAreas = { new ChartArea { Series = { columns }} }
-	, Dock = DockStyle.Bottom,
-	};
-	chart.Dump("Apache Log");
+	//Some confiugration options
+	var concurrentInterval = 60;
+	var simulationSpeed = 3000L;
+	var windowSize = (double)concurrentInterval/(double)simulationSpeed;
 
 	// Get information from log
-	var apacheList = new RepoApacheLogLine("access_log.txt");
-	var timeGeneratedApacheList = apacheList.GetObservableLogLines(600L);
-/*
-	var consoleRes = timeGeneratedApacheList.Window(TimeSpan.FromSeconds(5));
-	
-	consoleRes.Subscribe(
-		lines => { lines.ToList().Dump(); }
-	);*/
-
-	var graphRes = from window in timeGeneratedApacheList.Window(TimeSpan.FromSeconds(1))
-				from stats in
-                  (   // calculate statistics within one window
-                      from line in window
-                      group line by line.IP into g
-                      from Count in g.Count()
-                      select new
-                      {
-                          g.Key,
-                          Count
-                      }).ToList()
-              select new {
-			  		stats.Count, 
-					Points=from s in stats orderby s.Count descending 
-					       select new { s.Count, Address = s.Key }
-				};
-	
-	var count = 0;
+	var repository = new RepoApacheLogLine("access_log.txt");
+	var timeGeneratedApacheList = repository.GetObservableLogLines(simulationSpeed);
 	
 	
+//	timeGeneratedApacheList.DumpLive("grid");
+	var ipObservers = timeGeneratedApacheList.GroupBy(line => line.IP);
 	
-	graphRes.Subscribe(
-		lines => {
-			chart.BeginInit(); 
-			columns.BasePoints.Clear();
-			count++;
-			foreach(var point in lines.Points) columns.Add(point.Address, point.Count);
-			//columns.Add("Windows Rcv",lines.Count);
-			chart.EndInit(); }
+	
+	ipObservers.Subscribe(
+		ip => {
+			Console.WriteLine(String.Format("Got tuple: {0}", ip.Key));
+			ip.Subscribe(o => Console.WriteLine("{0} updated on {1}", ip.Key, o));
+		}
 	);
+	
+	ipObservers.Select(group => {
+		return Tuple.Create(group.Key, group.Latest().First().Date);
+	}).Select(o => o.Item1).DumpLive("grid");
+	
+	
+	
+	ipObservers.Buffer(100).DumpLive();
+
+//	ipObservers.Select(o => {
+//		return Tuple.Create(o.Key, o.Last().Date).
+//	}).
 }
 
-
 public static class Utils {
-public static void Shuffle<T>(this IList<T> list)  
-	{  
-		Random rng = new Random();  
-		int n = list.Count;  
-		while (n > 1) {  
-			n--;  
-			int k = rng.Next(n + 1);  
-			T value = list[k];  
-			list[k] = list[n];  
-			list[n] = value;  
-		}  
-	}
 
 }
 

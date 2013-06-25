@@ -7,6 +7,15 @@ using System.Globalization;
 using System.Threading;
 using System.Linq;
 using System.Diagnostics;
+using System.Reactive;
+using System.Reactive.Concurrency;
+using System.Reactive.Disposables;
+using System.Reactive.Joins;
+using System.Reactive.Linq;
+using System.Reactive.PlatformServices;
+using System.Reactive.Subjects;
+using System.Reactive.Threading.Tasks;
+using System.Runtime.CompilerServices;
 
 namespace UnitTests
 {
@@ -27,9 +36,10 @@ namespace UnitTests
 		[TestMethod]
 		public void TestGetObservable()
 		{
+			Debug.WriteLine("Started reading apache loglines");
 			var repo = new RepoApacheLogLine();
-			var observable = repo.GetObservableLogLines(10000);
-
+			var observable = repo.GetObservableLogLines(1);
+			observable.Subscribe(o => Debug.WriteLine(o));
 			Thread.Sleep(100000);
 		}
 
