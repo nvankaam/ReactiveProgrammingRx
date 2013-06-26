@@ -47,34 +47,46 @@ void Main()
 
 	// Get information from log
 	var apacheList = new RepoApacheLogLine("access_log.txt");
+	
+	// Initialize DB component
 	var db = new RepoEF();
     
 	var timeGeneratedApacheList = apacheList.GetObservableLogLines(60L);
-	
-	var first = false;
-	var before = 0;
-	var buffer = timeGeneratedApacheList.Buffer(TimeSpan.FromSeconds(5));
-	buffer.Subscribe( 
-		x =>  x.Dump(),
-		ex => Console.WriteLine("OnError: {0}", ex.Message),
-		() => Console.WriteLine("Complete")
-	);
+
+	Dictionary<string, int> class_count = new Dictionary<string, int>();
 
 	// Make the IP matchings (right now it is unique IPs)
-	var uniqueIPs = timeGeneratedApacheList.GroupBy(x => x.IP);
-
+	var groups = timeGeneratedApacheList
+						.GroupBy( lines => { return lines.IP; } );
+		
+	var geoGroups = groups.Select( g => 
+		{
+			return new { grp = g, geoIP = Utils.getGeoIP(g.Key)};
+		}
+	);
+	
+	var gr = geoGroups.SelectMany( geoGroup => {
+						var geoLocation = geoGroup.geoIP;
+						return geoGroup.grp.Select( line => new { line = line, geoIP = geoLocation });
+					});
+					
+	gr.Subscribe( x => Console.WriteLine(x.geoIP+" "+x.line));
+	
 	// Subscribe to new classes being created
-	uniqueIPs.Subscribe(
+	/*uniqueIPs.Subscribe(
 		lines => { 
 			// Ascynchronous call to database
 			// ...
 			// Subscribe to matched objects into class
+			class_count.Add(lines.Key,0);
 			lines.Subscribe(plus_one => { 
+				class_count[plus_one.IP] = class_count[plus_one.IP] + 1;
+				class_count.Dump();
 				//Console.WriteLine("   +1 to "+lines.Key+" with time "+plus_one.Date); // Count process
 			}); 
 			//Console.WriteLine("New Unique IP "+lines.Key);
 		}
-	);
+	);*/
 /*
 	var consoleRes = timeGeneratedApacheList.Window(TimeSpan.FromSeconds(5)).Subscribe(
 		lines => { lines.ToList().Dump(); }
@@ -122,7 +134,13 @@ void Main()
 	);*/
 }
 
-
 public static class Utils {
-
+	public static IObservable<int> getGeoIP(string ip) {
+			return Observable.Create<int>(observer => {
+			Task.Delay(1000);
+			observer.OnNext(6);
+			observer.OnCompleted();
+			return Disposable.Create(() => Console.WriteLine("Observer has unsubscribed"));
+		});
+	}
 }

@@ -47,34 +47,43 @@ void Main()
 
 	// Get information from log
 	var apacheList = new RepoApacheLogLine("access_log.txt");
+	
+	// Initialize DB component
 	var db = new RepoEF();
     
 	var timeGeneratedApacheList = apacheList.GetObservableLogLines(60L);
-	
-	var first = false;
-	var before = 0;
-	var buffer = timeGeneratedApacheList.Buffer(TimeSpan.FromSeconds(5));
-	buffer.Subscribe( 
-		x =>  x.Dump(),
-		ex => Console.WriteLine("OnError: {0}", ex.Message),
-		() => Console.WriteLine("Complete")
-	);
+
+	Dictionary<string, int> class_count = new Dictionary<string, int>();
 
 	// Make the IP matchings (right now it is unique IPs)
-	var uniqueIPs = timeGeneratedApacheList.GroupBy(x => x.IP);
+	var uniqueIPs = timeGeneratedApacheList
+		.GroupBy(line => line.IP)
+		.Select(groups => {
+			class_count.Add(groups.Key,0);
+		})
+		.Subscribe(plus_one => { 
+				class_count[plus_one.IP] = class_count[plus_one.IP] + 1;
+				//class_count.Dump();
+				//Console.WriteLine("   +1 to "+lines.Key+" with time "+plus_one.Date); // Count process
+		});
+		
+	
 
 	// Subscribe to new classes being created
-	uniqueIPs.Subscribe(
+	/*uniqueIPs.Subscribe(
 		lines => { 
 			// Ascynchronous call to database
 			// ...
 			// Subscribe to matched objects into class
+			class_count.Add(lines.Key,0);
 			lines.Subscribe(plus_one => { 
+				class_count[plus_one.IP] = class_count[plus_one.IP] + 1;
+				class_count.Dump();
 				//Console.WriteLine("   +1 to "+lines.Key+" with time "+plus_one.Date); // Count process
 			}); 
 			//Console.WriteLine("New Unique IP "+lines.Key);
 		}
-	);
+	);*/
 /*
 	var consoleRes = timeGeneratedApacheList.Window(TimeSpan.FromSeconds(5)).Subscribe(
 		lines => { lines.ToList().Dump(); }
