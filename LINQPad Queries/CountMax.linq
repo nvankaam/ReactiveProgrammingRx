@@ -12,6 +12,7 @@
   <Namespace>Data.Model</Namespace>
   <Namespace>Data.Repo</Namespace>
   <Namespace>System</Namespace>
+  <Namespace>System.Collections</Namespace>
   <Namespace>System.Collections.Generic</Namespace>
   <Namespace>System.Globalization</Namespace>
   <Namespace>System.IO</Namespace>
@@ -36,34 +37,22 @@ void Main()
 {
 	//Some confiugration options
 	var updateTime = 60;
-	var simulationSpeed = 600L;
+	var simulationSpeed = 60L;
 	var windowSize = (double)updateTime/(double)simulationSpeed;
 
 	// Get information from log
 	var repository = new RepoApacheLogLine("access_log.txt");
 	var timeGeneratedApacheList = repository.GetObservableLogLines(simulationSpeed);
 	
+	var windows = timeGeneratedApacheList.Window(TimeSpan.FromSeconds(windowSize)).Select(
+		window => window.GroupBy(line => line.IP).Select(o => o.Count().Select(count => Tuple.Create(o.Key, count))));
 	
-	var observable = Observable.Create<IEnumerable<KeyValuePair<string, DateTime>>>((observer) => {
-		var stringDict = new Dictionary<string, DateTime>();
-		var value = "";
-		return timeGeneratedApacheList.GroupBy(line => line.IP).SelectMany(grp => 
-			grp.Select(o => Tuple.Create(o.IP, o.Date))
-		).Subscribe(o2 => {
-			value = o2.Item1;
-			stringDict.Remove(o2.Item1);
-			stringDict.Add(o2.Item1, o2.Item2);
-			observer.OnNext(stringDict.OrderBy(o3 => o3.Value));
-		});
-	});
+	windows.Subscribe(window => window.Subscribe(o => o.DumpLive()));
 	
-	//Visualisation with dumplive
-	observable.Select(o => {
-		var result = "";
-		foreach (var data in o) {
-			result += data.Key+"-"+data.Value+"\r\n";
-		}
-		return result;
-	}).DumpLive();
+}
+
+public static class Utils {
 	
+}
+
 // Define other methods and classes here
