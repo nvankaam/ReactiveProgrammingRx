@@ -1,6 +1,6 @@
 <Query Kind="Program">
   <Reference>&lt;RuntimeDirectory&gt;\Accessibility.dll</Reference>
-  <Reference Relative="..\RxSplunkSolution\Data\bin\Debug\Data.dll">D:\Programação\Source Code\ReactiveProgrammingRx\RxSplunkSolution\Data\bin\Debug\Data.dll</Reference>
+  <Reference Relative="..\RxSplunkSolution\Data\bin\Debug\Data.dll">&lt;MyDocuments&gt;\Studie\Reactive\Repo\RxSplunkSolution\Data\bin\Debug\Data.dll</Reference>
   <Reference>&lt;RuntimeDirectory&gt;\System.Configuration.dll</Reference>
   <Reference>&lt;RuntimeDirectory&gt;\System.Deployment.dll</Reference>
   <Reference>&lt;RuntimeDirectory&gt;\System.Runtime.Serialization.Formatters.Soap.dll</Reference>
@@ -66,11 +66,10 @@ void Main()
 	);
 	
 	var gr = geoGroups.SelectMany( geoGroup => {
-						var geoLocation = geoGroup.geoIP;
-						return geoGroup.grp.Select( line => new { line = line, geoIP = geoLocation });
+						return geoGroup.grp.CombineLatest(geoGroup.geoIP, (line, ip) => Tuple.Create(ip, line));
 					});
 					
-	gr.Subscribe( x => Console.WriteLine(x.geoIP+" "+x.line));
+	gr.Subscribe( x => Console.WriteLine(x.Item1+" "+x.Item2));
 	
 	// Subscribe to new classes being created
 	/*uniqueIPs.Subscribe(
@@ -136,11 +135,11 @@ void Main()
 
 public static class Utils {
 	public static IObservable<int> getGeoIP(string ip) {
-			return Observable.Create<int>(observer => {
-			Task.Delay(1000);
+			return Observable.Create<int>(async observer => {
+			await Task.Delay(10000);
 			observer.OnNext(6);
 			observer.OnCompleted();
-			return Disposable.Create(() => Console.WriteLine("Observer has unsubscribed"));
+			return Disposable.Create(() => {return;});
 		});
 	}
 }
