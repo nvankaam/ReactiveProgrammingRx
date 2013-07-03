@@ -16,6 +16,7 @@ using System.Reactive.PlatformServices;
 using System.Reactive.Subjects;
 using System.Reactive.Threading.Tasks;
 using System.Runtime.CompilerServices;
+using Core.SignalR;
 
 namespace UnitTests
 {
@@ -80,6 +81,16 @@ namespace UnitTests
 				}
 			}
 			Debug.WriteLine("Done...");
+		}
+
+		/// <summary>
+		/// Tests the working of the consolehub by sending a message
+		/// </summary>
+		[TestMethod]
+		public void TestConsoleHub()
+		{
+			var hub = new ConsoleHub();
+			Thread.Sleep(1);
 		}
 
         [TestMethod]

@@ -13,15 +13,16 @@ namespace Data.Repo
 
         public async Task<IEnumerable<GeoIp>> getAsync(string ip)
         {
-            List<GeoIp> geo = await (from b in GeoIps
-                        where b.Ip.Equals(ip)
-                        select b).ToListAsync();
+			//List<GeoIp> geo = await (from b in GeoIps
+			//			where b.Ip.Equals(ip)
+			//			select b).ToListAsync();
             /*
             var query = from b in GeoIps
                         where b.Lat == Lat && b.Long == Long
                         select b;*/
 
-            return geo;
+          //  return geo;
+			return null;
         }
 
         public GeoIp get(string ip)
