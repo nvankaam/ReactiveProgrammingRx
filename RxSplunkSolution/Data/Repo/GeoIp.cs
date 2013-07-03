@@ -10,7 +10,7 @@ namespace Data.Repo
 	{
 		public int GeoIpId { get; set; }
 		public string Ip { get; set; }
-		public long Long { get; set; }
-		public long Lat { get; set; }
+		public double Long { get; set; }
+		public double Lat { get; set; }
 	}
 }

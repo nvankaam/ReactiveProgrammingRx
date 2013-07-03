@@ -50,27 +50,32 @@ void Main()
 	
 	// Initialize DB component
 	var db = new RepoEF();
+	var geoIPAPI = new FreeGeoIP();
     
 	var timeGeneratedApacheList = apacheList.GetObservableLogLines(60L);
 
 	Dictionary<string, int> class_count = new Dictionary<string, int>();
 
 	// Make the IP matchings (right now it is unique IPs)
-	var groups = timeGeneratedApacheList
-						.GroupBy( lines => { return lines.IP; } );
-		
-	var geoGroups = groups.Select( g => 
-		{
-			return new { grp = g, geoIP = Utils.getGeoIP(g.Key)};
+	var uniqueIPs = timeGeneratedApacheList
+		.GroupBy(line => line.IP);
+
+	// Subscribe to new classes being created
+	uniqueIPs.Subscribe(
+		lines => { 
+			// Ascynchronous call to database
+			Console.WriteLine(geoIPAPI.getIPLocation2(lines.Key));
+			// Subscribe to matched objects into class
+			class_count.Add(lines.Key,0);
+			lines.Subscribe(plus_one => { 
+				class_count[plus_one.IP] = class_count[plus_one.IP] + 1;
+				
+				//class_count.Dump();
+				//Console.WriteLine("   +1 to "+lines.Key+" with time "+plus_one.Date); // Count process
+			}); 
+			//Console.WriteLine("New Unique IP "+lines.Key);
 		}
 	);
-	
-	var gr = geoGroups.SelectMany( geoGroup => {
-						var geoLocation = geoGroup.geoIP;
-						return geoGroup.grp.Select( line => new { line = line, geoIP = geoLocation });
-					});
-					
-	gr.Subscribe( x => Console.WriteLine(x.geoIP+" "+x.line));
 
 	/*		
 	var graphRes = from window in timeGeneratedApacheList.Window(TimeSpan.FromSeconds(1))
