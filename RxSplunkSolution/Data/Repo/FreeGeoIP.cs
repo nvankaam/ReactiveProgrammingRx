@@ -13,6 +13,8 @@ using System.Reactive.Threading.Tasks;
 using System.Reactive.Threading;
 using System.Reactive.Concurrency;
 using System.Xml.Linq;
+using System.IO;
+using System.Reflection;
 
 namespace Data.Repo
 {
@@ -35,71 +37,21 @@ namespace Data.Repo
     public class FreeGeoIP
     {
 
-        public GeoIp getIPLocation(String IP)
-        {
-            var client = new System.Net.WebClient();
-
-            string downloadedString = client.DownloadString("http://freegeoip.net/xml/"+IP);
-
-            XmlSerializer mySerializer =
-                new XmlSerializer(typeof(Response));
-
-            Response response = null;
-
-            XmlReader xmlReader = XmlReader.Create(new System.IO.StringReader(downloadedString));
-
-            response = (Response)mySerializer.Deserialize(xmlReader);
-
-            return new GeoIp()
-            {
-                Ip = IP,
-                Lat = Convert.ToDouble(response.Latitude),
-                Long = Convert.ToDouble(response.Longitude)
-            };
-
-        }
-
-        public GeoIp getIPLocation2(String IP)
-        {
-
-            XmlDocument foo = new XmlDocument();
-
-            foo.Load(String.Format("http://freegeoip.net/xml/{0}", IP));
-
-            XmlNode root = foo.DocumentElement;
-
-            XmlNode latitude = root.SelectSingleNode("/Response/Latitude");
-            XmlNode longitude = root.SelectSingleNode("/Response/Longitude");
-
-            return new GeoIp()
-            {
-                Ip = IP,
-                Lat = Convert.ToDouble(latitude.InnerText),
-                Long = Convert.ToDouble(longitude.InnerText)
-            };
-
-        }
-
-
-        public IObservable<GeoIp> getIPLocation3(String IP)
+        public IObservable<GeoIp> getGeoLocation(String IP)
         {
             WebClient wc = new WebClient();
             var result = wc.DownloadStringTaskAsync(new Uri("http://freegeoip.net/xml/" + IP)).ToObservable();
-           return result.Select(x =>
+            return result.Select(x =>
             {
-                XDocument xDoc = XDocument.Load(x);
-                var mydata = (from item in xDoc.Root.Elements("Response")
-                             select new GeoIp()
-                             {
-                                 Ip = IP,
-                                 Lat = Convert.ToDouble((string)item.Element("Latitude")),
-                                 Long = Convert.ToDouble((string)item.Element("Longitude"))
-                             }).Single();
-                return mydata;
+                XDocument xDoc = XDocument.Parse(x);
+                var res = new GeoIp()
+                    {
+                        Ip = IP,
+                        Lat = Convert.ToDouble((string)xDoc.Root.Element("Latitude")),
+                        Long = Convert.ToDouble((string)xDoc.Root.Element("Longitude"))
+                    };
+                return res;
             });
         }
-
     }
-
-   
 }

@@ -103,24 +103,13 @@ namespace UnitTests
         }
 
         [TestMethod]
-        public void IPInfo()
-        {
-            var geoIP = new FreeGeoIP();
-            var location = geoIP.getIPLocation2("123.123.123.123");
-            Debug.WriteLine("Location: " + location.Lat + " : " + location.Long);
-        }
-
-        [TestMethod]
         public void IPInfoObservable()
         {
             var geoIP = new FreeGeoIP();
-            var location = geoIP.getIPLocation3("123.123.123.123");
-
+            var location = geoIP.getGeoLocation("123.123.123.123");
             var ip = location.Wait();
-            
             Debug.WriteLine("Location: " + ip.Lat + " : " + ip.Long);
            
         }
-
 	}
 }
