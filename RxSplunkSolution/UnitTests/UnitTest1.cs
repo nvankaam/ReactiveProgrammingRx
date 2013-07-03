@@ -102,5 +102,13 @@ namespace UnitTests
             }
         }
 
+        [TestMethod]
+        public void IPInfo()
+        {
+            var geoIP = new FreeGeoIP();
+            var location = geoIP.getIPLocation2("123.123.123.123");
+            Debug.WriteLine(location);
+        }
+
 	}
 }

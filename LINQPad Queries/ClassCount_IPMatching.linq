@@ -57,20 +57,10 @@ void Main()
 
 	// Make the IP matchings (right now it is unique IPs)
 	var uniqueIPs = timeGeneratedApacheList
-		.GroupBy(line => line.IP)
-		.Select(groups => {
-			class_count.Add(groups.Key,0);
-		})
-		.Subscribe(plus_one => { 
-				class_count[plus_one.IP] = class_count[plus_one.IP] + 1;
-				//class_count.Dump();
-				//Console.WriteLine("   +1 to "+lines.Key+" with time "+plus_one.Date); // Count process
-		});
-		
-	
+		.GroupBy(line => line.IP);
 
 	// Subscribe to new classes being created
-	/*uniqueIPs.Subscribe(
+	uniqueIPs.Subscribe(
 		lines => { 
 			// Ascynchronous call to database
 			// ...
@@ -83,24 +73,9 @@ void Main()
 			}); 
 			//Console.WriteLine("New Unique IP "+lines.Key);
 		}
-	);*/
-/*
-	var consoleRes = timeGeneratedApacheList.Window(TimeSpan.FromSeconds(5)).Subscribe(
-		lines => { lines.ToList().Dump(); }
-	);*/
-	/*
-	consoleRes.Subscribe(
-		lines => { lines.ToList().Dump(); }
-	);*/
-
-	/*
-	timeGeneratedApacheList.Subscribe(
-		success => {
-			Console.WriteLine(db.get(success.IP));
-		}
 	);
-	*/
-		/*		
+
+	/*		
 	var graphRes = from window in timeGeneratedApacheList.Window(TimeSpan.FromSeconds(1))
 				from stats in
                   (   // calculate statistics within one window
@@ -130,7 +105,6 @@ void Main()
 			chart.EndInit(); }
 	);*/
 }
-
 
 public static class Utils {
 

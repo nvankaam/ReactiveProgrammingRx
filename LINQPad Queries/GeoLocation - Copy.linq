@@ -1,6 +1,6 @@
 <Query Kind="Program">
   <Reference>&lt;RuntimeDirectory&gt;\Accessibility.dll</Reference>
-  <Reference Relative="..\RxSplunkSolution\Data\bin\Debug\Data.dll">&lt;MyDocuments&gt;\Studie\Reactive\Repo\RxSplunkSolution\Data\bin\Debug\Data.dll</Reference>
+  <Reference Relative="..\RxSplunkSolution\Data\bin\Debug\Data.dll">D:\Programação\Source Code\ReactiveProgrammingRx\RxSplunkSolution\Data\bin\Debug\Data.dll</Reference>
   <Reference>&lt;RuntimeDirectory&gt;\System.Configuration.dll</Reference>
   <Reference>&lt;RuntimeDirectory&gt;\System.Deployment.dll</Reference>
   <Reference>&lt;RuntimeDirectory&gt;\System.Runtime.Serialization.Formatters.Soap.dll</Reference>
@@ -66,43 +66,13 @@ void Main()
 	);
 	
 	var gr = geoGroups.SelectMany( geoGroup => {
-						return geoGroup.grp.CombineLatest(geoGroup.geoIP, (line, ip) => Tuple.Create(ip, line));
+						var geoLocation = geoGroup.geoIP;
+						return geoGroup.grp.Select( line => new { line = line, geoIP = geoLocation });
 					});
 					
-	gr.Subscribe( x => Console.WriteLine(x.Item1+" "+x.Item2));
-	
-	// Subscribe to new classes being created
-	/*uniqueIPs.Subscribe(
-		lines => { 
-			// Ascynchronous call to database
-			// ...
-			// Subscribe to matched objects into class
-			class_count.Add(lines.Key,0);
-			lines.Subscribe(plus_one => { 
-				class_count[plus_one.IP] = class_count[plus_one.IP] + 1;
-				class_count.Dump();
-				//Console.WriteLine("   +1 to "+lines.Key+" with time "+plus_one.Date); // Count process
-			}); 
-			//Console.WriteLine("New Unique IP "+lines.Key);
-		}
-	);*/
-/*
-	var consoleRes = timeGeneratedApacheList.Window(TimeSpan.FromSeconds(5)).Subscribe(
-		lines => { lines.ToList().Dump(); }
-	);*/
-	/*
-	consoleRes.Subscribe(
-		lines => { lines.ToList().Dump(); }
-	);*/
+	gr.Subscribe( x => Console.WriteLine(x.geoIP+" "+x.line));
 
-	/*
-	timeGeneratedApacheList.Subscribe(
-		success => {
-			Console.WriteLine(db.get(success.IP));
-		}
-	);
-	*/
-		/*		
+	/*		
 	var graphRes = from window in timeGeneratedApacheList.Window(TimeSpan.FromSeconds(1))
 				from stats in
                   (   // calculate statistics within one window
@@ -135,11 +105,11 @@ void Main()
 
 public static class Utils {
 	public static IObservable<int> getGeoIP(string ip) {
-			return Observable.Create<int>(async observer => {
-			await Task.Delay(10000);
+			return Observable.Create<int>(observer => {
+			Task.Delay(1000);
 			observer.OnNext(6);
 			observer.OnCompleted();
-			return Disposable.Create(() => {return;});
+			return Disposable.Create(() => Console.WriteLine("Observer has unsubscribed"));
 		});
 	}
 }
