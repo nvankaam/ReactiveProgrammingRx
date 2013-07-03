@@ -85,6 +85,10 @@
       <Project>{f534f8ab-aaa8-4571-a28c-ce3e95ab6a03}</Project>
       <Name>Data</Name>
     </ProjectReference>
+    <ProjectReference Include="..\WebUI\WebUI.csproj">
+      <Project>{23be91e6-e2fc-4ac7-8cfb-3bf37d8f4b63}</Project>
+      <Name>WebUI</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">
