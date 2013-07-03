@@ -1,10 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Serialization;
+using System.Reactive;
+using System.Reactive.Linq;
+using System.Reactive.Threading.Tasks;
+using System.Reactive.Threading;
+using System.Reactive.Concurrency;
+using System.Xml.Linq;
 
 namespace Data.Repo
 {
@@ -27,7 +35,7 @@ namespace Data.Repo
     public class FreeGeoIP
     {
 
-        public String getIPLocation(String IP)
+        public GeoIp getIPLocation(String IP)
         {
             var client = new System.Net.WebClient();
 
@@ -41,29 +49,56 @@ namespace Data.Repo
             XmlReader xmlReader = XmlReader.Create(new System.IO.StringReader(downloadedString));
 
             response = (Response)mySerializer.Deserialize(xmlReader);
-            return "Location: " + response.Latitude + ":" + response.Longitude;
+
+            return new GeoIp()
+            {
+                Ip = IP,
+                Lat = Convert.ToDouble(response.Latitude),
+                Long = Convert.ToDouble(response.Longitude)
+            };
 
         }
 
-        public String getIPLocation2(String IP)
+        public GeoIp getIPLocation2(String IP)
         {
 
             XmlDocument foo = new XmlDocument();
 
-            //Let's assume that the IP of the target player is in args[1]
-            //This allows us to parameterize the Load method to reflect the IP address
-            //of the user per the OP's request
             foo.Load(String.Format("http://freegeoip.net/xml/{0}", IP));
 
             XmlNode root = foo.DocumentElement;
 
-            // you might need to tweak the XPath query below
             XmlNode latitude = root.SelectSingleNode("/Response/Latitude");
             XmlNode longitude = root.SelectSingleNode("/Response/Longitude");
 
-            return "Location: " + latitude.InnerText + ":" + longitude.InnerText;
+            return new GeoIp()
+            {
+                Ip = IP,
+                Lat = Convert.ToDouble(latitude.InnerText),
+                Long = Convert.ToDouble(longitude.InnerText)
+            };
 
         }
+
+
+        public IObservable<GeoIp> getIPLocation3(String IP)
+        {
+            WebClient wc = new WebClient();
+            var result = wc.DownloadStringTaskAsync(new Uri("http://freegeoip.net/xml/" + IP)).ToObservable();
+           return result.Select(x =>
+            {
+                XDocument xDoc = XDocument.Load(x);
+                var mydata = (from item in xDoc.Root.Elements("Response")
+                             select new GeoIp()
+                             {
+                                 Ip = IP,
+                                 Lat = Convert.ToDouble((string)item.Element("Latitude")),
+                                 Long = Convert.ToDouble((string)item.Element("Longitude"))
+                             }).Single();
+                return mydata;
+            });
+        }
+
     }
 
    
