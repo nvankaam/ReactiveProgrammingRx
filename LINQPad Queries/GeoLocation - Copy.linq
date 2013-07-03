@@ -71,39 +71,8 @@ void Main()
 					});
 					
 	gr.Subscribe( x => Console.WriteLine(x.geoIP+" "+x.line));
-	
-	// Subscribe to new classes being created
-	/*uniqueIPs.Subscribe(
-		lines => { 
-			// Ascynchronous call to database
-			// ...
-			// Subscribe to matched objects into class
-			class_count.Add(lines.Key,0);
-			lines.Subscribe(plus_one => { 
-				class_count[plus_one.IP] = class_count[plus_one.IP] + 1;
-				class_count.Dump();
-				//Console.WriteLine("   +1 to "+lines.Key+" with time "+plus_one.Date); // Count process
-			}); 
-			//Console.WriteLine("New Unique IP "+lines.Key);
-		}
-	);*/
-/*
-	var consoleRes = timeGeneratedApacheList.Window(TimeSpan.FromSeconds(5)).Subscribe(
-		lines => { lines.ToList().Dump(); }
-	);*/
-	/*
-	consoleRes.Subscribe(
-		lines => { lines.ToList().Dump(); }
-	);*/
 
-	/*
-	timeGeneratedApacheList.Subscribe(
-		success => {
-			Console.WriteLine(db.get(success.IP));
-		}
-	);
-	*/
-		/*		
+	/*		
 	var graphRes = from window in timeGeneratedApacheList.Window(TimeSpan.FromSeconds(1))
 				from stats in
                   (   // calculate statistics within one window

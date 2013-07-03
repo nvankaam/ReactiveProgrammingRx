@@ -7,6 +7,7 @@
   <Reference>&lt;RuntimeDirectory&gt;\System.Security.dll</Reference>
   <Reference>&lt;RuntimeDirectory&gt;\System.Windows.Forms.DataVisualization.dll</Reference>
   <Reference>&lt;RuntimeDirectory&gt;\System.Windows.Forms.dll</Reference>
+  <NuGetReference Prerelease="true">EntityFramework</NuGetReference>
   <NuGetReference>Linq2Charts</NuGetReference>
   <NuGetReference>Rx-Main</NuGetReference>
   <Namespace>Data.Model</Namespace>
@@ -18,7 +19,6 @@
   <Namespace>System.IO</Namespace>
   <Namespace>System.Linq</Namespace>
   <Namespace>System.Linq.Charting</Namespace>
-  <Namespace>System.Net</Namespace>
   <Namespace>System.Net</Namespace>
   <Namespace>System.Reactive</Namespace>
   <Namespace>System.Reactive.Concurrency</Namespace>
@@ -38,67 +38,78 @@ void Main()
 {
 	
 	// Create chart
-	DateTime lastTime = DateTime.Now;
-	
 	var columns = new Column{ Points = {}, LegendText = "Apache Log" };
 	var chart = new Chart
 	{ ChartAreas = { new ChartArea { Series = { columns }} }
-	, Dock = DockStyle.Fill,
+	, Dock = DockStyle.Bottom,
 	};
 	chart.Dump("Apache Log");
-	var timestampNow = DateTime.Now;
+
 	// Get information from log
 	var apacheList = new RepoApacheLogLine("access_log.txt");
+	
+	// Initialize DB component
+	var db = new RepoEF();
+    
 	var timeGeneratedApacheList = apacheList.GetObservableLogLines(60L);
+
+	Dictionary<string, int> class_count = new Dictionary<string, int>();
+
+	// Make the IP matchings (right now it is unique IPs)
+	var groups = timeGeneratedApacheList
+						.GroupBy( lines => { return lines.IP; } );
+		
+	var geoGroups = groups.Select( g => 
+		{
+			return new { grp = g, geoIP = Utils.getGeoIP(g.Key)};
+		}
+	);
 	
+	var gr = geoGroups.SelectMany( geoGroup => {
+						var geoLocation = geoGroup.geoIP;
+						return geoGroup.grp.Select( line => new { line = line, geoIP = geoLocation });
+					});
+					
+	gr.Subscribe( x => Console.WriteLine(x.geoIP+" "+x.line));
 
-	var test = timeGeneratedApacheList
-	.Where( x => x.IP.Equals("83.86.171.177"))
-	.LogTimestampedValues(x => {
-		Console.WriteLine("Got a logline on "+(x.Timestamp - timestampNow).TotalSeconds + x.Value.OriginalLine);
-		timestampNow = DateTime.Now;
-	})
-	.Throttle(TimeSpan.FromMilliseconds(500)).Subscribe(o => Debug.WriteLine("Error: No request after logline: "+o));
-
-
-
-//
-//	var graphRes = from window in timeGeneratedApacheList.Window(TimeSpan.FromSeconds(1))
-//				from stats in
-//                  (   // calculate statistics within one window
-//                      from line in window
-//                      group line by line.IP into g
-//                      from Count in g.Count()
-//                      select new
-//                      {
-//                          g.Key,
-//                          Count
-//                      }).ToList()
-//              select new { 
-//			  		stats.Count, 
-//					Points=from s in stats orderby s.Count descending 
-//					       select new { s.Count, Address = s.Key }
-//				};
-//	
-//	var count = 0;
-//	
-//	graphRes.Subscribe(
-//		lines => {
-//			chart.BeginInit(); 
-//			columns.BasePoints.Clear();
-//			count++;
-//			foreach(var point in lines.Points) columns.Add(point.Address, point.Count);
-//			//columns.Add("Windows Rcv",lines.Count);
-//			chart.EndInit(); }
-//	);
+	/*		
+	var graphRes = from window in timeGeneratedApacheList.Window(TimeSpan.FromSeconds(1))
+				from stats in
+                  (   // calculate statistics within one window
+                      from line in window
+                      group line by line.IP into g
+                      from Count in g.Count()
+                      select new
+                      {
+                          g.Key,
+                          Count
+                      }).ToList()
+              select new {
+			  		stats.Count, 
+					Points=from s in stats orderby s.Count descending 
+					       select new { s.Count, Address = s.Key }
+				};
+	
+	var count = 0;
+	
+	graphRes.Subscribe(
+		lines => {
+			chart.BeginInit(); 
+			columns.BasePoints.Clear();
+			count++;
+			foreach(var point in lines.Points) columns.Add(point.Address, point.Count);
+			//columns.Add("Windows Rcv",lines.Count);
+			chart.EndInit(); }
+	);*/
 }
-	
-	public static class Utils {
-	public static IObservable<T> LogTimestampedValues<T>(this IObservable<T> source, Action<Timestamped<T>> onNext)
-        {
-            return source.Timestamp().Do(onNext).Select(x => x.Value);
-        }
 
+public static class Utils {
+	public static IObservable<int> getGeoIP(string ip) {
+			return Observable.Create<int>(observer => {
+			Task.Delay(1000);
+			observer.OnNext(6);
+			observer.OnCompleted();
+			return Disposable.Create(() => Console.WriteLine("Observer has unsubscribed"));
+		});
 	}
-
-// Define other methods and classes here
+}
