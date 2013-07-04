@@ -12,5 +12,6 @@ namespace Data.Repo
 		public string Ip { get; set; }
 		public double Long { get; set; }
 		public double Lat { get; set; }
+		public string description { get; set; }
 	}
 }

@@ -6,6 +6,7 @@ using System.Web.Http;
 using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
+using Microsoft.AspNet.SignalR;
 
 namespace WebUI
 {
@@ -17,7 +18,9 @@ namespace WebUI
 		protected void Application_Start()
 		{
 
-			RouteTable.Routes.MapHubs();
+			var hubConfiguration = new HubConfiguration();
+			hubConfiguration.EnableCrossDomain = true;
+			RouteTable.Routes.MapHubs(hubConfiguration);
 
 			AreaRegistration.RegisterAllAreas();
 			WebApiConfig.Register(GlobalConfiguration.Configuration);

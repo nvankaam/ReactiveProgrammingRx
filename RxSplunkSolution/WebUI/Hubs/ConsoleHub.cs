@@ -7,8 +7,8 @@ using Microsoft.AspNet.SignalR.Hubs;
 
 namespace WebUI.Infra
 {
-	[HubName("chat")] 
-	public class ChatHub : Hub
+	[HubName("Console")] 
+	public class ConsoleHub : Hub
 	{
 		public void Hello()
 		{
