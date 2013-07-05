@@ -16,7 +16,8 @@ using System.Reactive.PlatformServices;
 using System.Reactive.Subjects;
 using System.Reactive.Threading.Tasks;
 using System.Runtime.CompilerServices;
-using Core.SignalR;
+using Data.SignalR;
+using WebUI.Infra;
 
 namespace UnitTests
 {
@@ -90,6 +91,25 @@ namespace UnitTests
 		public void TestConsoleHub()
 		{
 			var hub = new ConsoleHub();
+			Thread.Sleep(1);
+		}
+
+
+		/// <summary>
+		/// Test by sending some geo ip
+		/// </summary>
+		[TestMethod]
+		public void TestGeoHub()
+		{
+			var hub = new GeoHub();
+			hub.SendMessage(new GeoIp()
+			{
+				description = "Test geo ip location",
+				GeoIpId = 1337,
+				Ip = "1.3.3.7",
+				Lat = 53,
+				Long = 4
+			});
 			Thread.Sleep(1);
 		}
 

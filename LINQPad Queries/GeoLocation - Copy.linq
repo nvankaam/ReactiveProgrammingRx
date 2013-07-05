@@ -1,6 +1,6 @@
 <Query Kind="Program">
   <Reference>&lt;RuntimeDirectory&gt;\Accessibility.dll</Reference>
-  <Reference Relative="..\RxSplunkSolution\Data\bin\Debug\Data.dll">D:\Programação\Source Code\ReactiveProgrammingRx\RxSplunkSolution\Data\bin\Debug\Data.dll</Reference>
+  <Reference Relative="..\RxSplunkSolution\Data\bin\Debug\Data.dll">&lt;MyDocuments&gt;\Studie\Reactive\Repo\RxSplunkSolution\Data\bin\Debug\Data.dll</Reference>
   <Reference>&lt;RuntimeDirectory&gt;\System.Configuration.dll</Reference>
   <Reference>&lt;RuntimeDirectory&gt;\System.Deployment.dll</Reference>
   <Reference>&lt;RuntimeDirectory&gt;\System.Runtime.Serialization.Formatters.Soap.dll</Reference>
@@ -12,6 +12,7 @@
   <NuGetReference>Rx-Main</NuGetReference>
   <Namespace>Data.Model</Namespace>
   <Namespace>Data.Repo</Namespace>
+  <Namespace>Data.SignalR</Namespace>
   <Namespace>System</Namespace>
   <Namespace>System.Collections</Namespace>
   <Namespace>System.Collections.Generic</Namespace>
@@ -46,7 +47,7 @@ void Main()
 	chart.Dump("Apache Log");
 
 	// Get information from log
-	var apacheList = new RepoApacheLogLine("access_log.txt");
+	var apacheList = new RepoApacheLogLine("access_log_ringvaart_9.txt");
 	
 	// Initialize DB component
 	var db = new RepoEF();
@@ -60,11 +61,13 @@ void Main()
 	var uniqueIPs = timeGeneratedApacheList
 		.GroupBy(line => line.IP);
 
+	uniqueIPs.SelectMany(grp => geoIPAPI.getGeoLocation(grp.Key)).Subscribe(geoIp => GeoHub.SendIp(geoIp));
+
 	// Subscribe to new classes being created
 	uniqueIPs.Subscribe(
 		lines => { 
 			// Ascynchronous call to database
-			Console.WriteLine(geoIPAPI.getIPLocation2(lines.Key));
+			Console.WriteLine(geoIPAPI.getGeoLocation(lines.Key));
 			// Subscribe to matched objects into class
 			class_count.Add(lines.Key,0);
 			lines.Subscribe(plus_one => { 

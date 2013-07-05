@@ -13,6 +13,8 @@ using System.Reactive.Subjects;
 using System.Diagnostics;
 using System.Reactive.Concurrency;
 using System.Threading;
+using Data.SignalR;
+using Core.SignalR;
 
 
 namespace Data.Repo
@@ -81,6 +83,12 @@ namespace Data.Repo
 			////As this is just for testing purposes it is ok.
 			////var subj = new Subject<ApacheLogLine>();
 			////stream.Subscribe(tsst => subj.OnNext(tsst));
+
+
+			//Hook the console on signalR up to the observable
+			stream2.Subscribe(o => ConsoleHub.LogApacheLogLine(o));
+
+			//Return the stream
 			return stream2;
 		}
 		

@@ -96,6 +96,7 @@
     <Compile Include="Repo\RepoApacheLogLine.cs" />
     <Compile Include="Repo\RepoEF.cs" />
     <Compile Include="SignalR\ConsoleHub.cs" />
+    <Compile Include="SignalR\GeoHub.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Files\access_log.txt">

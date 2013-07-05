@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>ReactiveTest</title>
+    <link rel="stylesheet" href="reactivedart.css">
+  </head>
+  <body>
+   
+   
+    <div id="controls">
+       <h1>Reactive Map</h1>
+    </div>
+   <div id="map_container">
+    <div id="map"></div>
+   </div>
+
+
+  <div id="right_container">
+      <div id="console_container">
+        <div id="console_header">
+          <p><b>Category: </b><input type="text" id="consoleFilter" name="consoleFilter" /></p>
+          <p><b>Search: </b><input type="text" id="consoleSearch" name="consoleSearch" /></p>
+         </div>
+        <div id="console">
+        </div>
+      </div>
+  </div>
+    
+
+
+    
+    <script src='http://maps.google.com/maps?file=api&amp;v=3&amp;key=AIzaSyAcFI6_HZz_cUyDoM9Dp3sUap-nIUlhOA0'></script>
+    <script type="application/dart" src="reactivedart.dart"></script>
+    <script src="packages/browser/dart.js"></script>
+    <script src="packages/browser/interop.js"></script>
+    
+    <script src="js/jquery/jquery-1.8.2.js"></script>
+    <script src="js/ol/OpenLayers.js"></script>
+    <script src="js/signalR/jquery.signalR-1.1.2.js"></script>
+    <script src="http://localhost:83/signalr/hubs"></script>
+     <script>
+       
+       
+       
+      var map;
+      var pointLayer;
+
+      function InitializeOL() {
+          map = new OpenLayers.Map({
+              div: "map",
+              allOverlays: true
+          });
+
+          //var osm = new OpenLayers.Layer.OSM();
+              //Google maps doesnt work for some reason
+         var gmapLayer = new OpenLayers.Layer.Google("GMaps",
+         {
+            'sphericalMercator': true,
+             'maxExtent': new OpenLayers.Bounds(-20037508.34,-20037508.34,20037508.34,20037508.34)}
+         );
+        
+          //The pointlayer for drawing points on
+          pointLayer = new OpenLayers.Layer.Vector("Point Layer",
+          {
+            'sphericalMercator': true,
+            'maxExtent': new OpenLayers.Bounds(-20037508.34,-20037508.34,20037508.34,20037508.34)}
+          );
+        
+          pointLayer.styleMap.styles.default.defaultStyle.fillColor = "#0000ff";
+          pointLayer.styleMap.styles.default.defaultStyle.strokeColor = "#0000ff"
+          pointLayer.styleMap.styles.default.defaultStyle.pointRadius = 10;
+      
+          // note that first layer must be visible
+          map.addLayers([gmapLayer, pointLayer]);
+          
+          map.addControl(new OpenLayers.Control.LayerSwitcher());
+          map.zoomToMaxExtent();
+          
+       
+          
+      
+
+     
+      }
+    
+      
+      //Add a point to the map
+      function addToMap(lon, lat) {
+          var lonLat = new OpenLayers.LonLat(lon,lat);
+          lonLat.transform(
+                 new OpenLayers.Projection("EPSG:4326"), // transform from WGS 1984
+                 map.getProjectionObject() // to Spherical Mercator Projection
+               );
+               
+            var projection = map.getProjectionObject();
+            point = new OpenLayers.Geometry.Point(lonLat.lon, lonLat.lat);
+            
+            pointLayer.addFeatures([new OpenLayers.Feature.Vector(point)]);
+      }
+       
+       
+      $(function () {
+        InitializeOL();
+        
+        jQuery.support.cors = true;
+        $.connection.hub.url = "http://localhost:83/signalr";
+
+        var console = $.connection.Console;
+        var geo = $.connection.Geo;
+        // Create a function that the hub can call back to display messages.
+        console.client.addNewMessageToPage = function (name, message) {
+            consoleMessage(name, message);
+        };
+        
+        //Also forward a new geoIp to dart
+        geo.client.SendLocation = function (object) {
+          newGeoIp(object.GeoIpId, object.Ip, object.Long, object.Lat, object.description);
+        }
+        
+        // Start the connection.
+        $.connection.hub.start({xdomain: true }).done();
+      });
+      // This optional function html-encodes messages for display in the page.
+      function htmlEncode(value) {
+        var encodedValue = $('<div />').text(value).html();
+        return encodedValue;
+      }
+      
+     
+    </script>
+    
+    
+  
+     
+    
+  </body>
+</html>

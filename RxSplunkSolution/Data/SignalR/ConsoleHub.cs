@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Data.Model;
 using Microsoft.AspNet.SignalR.Client.Hubs;
 
-namespace Data.SignalR
+namespace Core.SignalR
 {
 	public class ConsoleHub
 	{

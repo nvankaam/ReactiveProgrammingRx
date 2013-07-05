@@ -1,9 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core", "Core\Core.csproj", "{2EE017BD-73E8-438B-9398-499CD04E7361}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data", "Data\Data.csproj", "{F534F8AB-AAA8-4571-A28C-CE3E95AB6A03}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core", "Data\Core.csproj", "{F534F8AB-AAA8-4571-A28C-CE3E95AB6A03}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StreamExample", "StreamExample\StreamExample.csproj", "{F53785DB-AA5B-41B9-A480-EC9A1EE8ABD8}"
 EndProject
@@ -17,10 +15,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{2EE017BD-73E8-438B-9398-499CD04E7361}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2EE017BD-73E8-438B-9398-499CD04E7361}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2EE017BD-73E8-438B-9398-499CD04E7361}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2EE017BD-73E8-438B-9398-499CD04E7361}.Release|Any CPU.Build.0 = Release|Any CPU
 		{F534F8AB-AAA8-4571-A28C-CE3E95AB6A03}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F534F8AB-AAA8-4571-A28C-CE3E95AB6A03}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F534F8AB-AAA8-4571-A28C-CE3E95AB6A03}.Release|Any CPU.ActiveCfg = Release|Any CPU
